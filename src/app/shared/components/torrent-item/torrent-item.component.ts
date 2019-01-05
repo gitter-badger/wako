@@ -6,6 +6,7 @@ import { KodiPlayStopForm } from '../../services/kodi/forms/player/kodi-play-sto
 import { KodiPlayOpenForm } from '../../services/kodi/forms/player/kodi-play-open.form';
 import { switchMap } from 'rxjs/operators';
 import { KodiHttpService } from '../../services/kodi/services/kodi-http.service';
+import { KodiService } from '../../services/app/kodi.service';
 
 @Component({
   selector: 'wk-torrent-item',
@@ -16,7 +17,7 @@ export class TorrentItemComponent {
   @Input()
   torrent: Torrent;
 
-  constructor(private platform: Platform, private toastController: ToastController) {}
+  constructor(private platform: Platform, private toastController: ToastController, private kodiService: KodiService) {}
 
   private isWebPlatform() {
     return this.platform.is('cordova') === false;
@@ -35,13 +36,28 @@ export class TorrentItemComponent {
   }
 
   private _download(url: string, title: string) {
-    if (false && this.isWebPlatform()) {
+    if (this.isWebPlatform()) {
       window.open(url, '_blank');
     } else {
-      this.presentToast(`Start downloading ${title} on ${KodiHttpService.host.host}:${KodiHttpService.host.port}`);
-      this.playTorrentOnKodi(url).subscribe(() => {
-        console.log('has played');
-        this.presentToast(`Torrent ${title} has started to play`);
+      this.kodiService.getCurrentHost().then(currentHost => {
+        if (!currentHost) {
+          this.toastController
+            .create({
+              message: `No host set for kodi`,
+              duration: 4000,
+              showCloseButton: true,
+              position: 'bottom'
+            })
+            .then(toast => {
+              toast.present();
+            });
+          return;
+        }
+        this.presentToast(`Start downloading ${title} on ${KodiHttpService.host.host}:${KodiHttpService.host.port}`);
+        this.playTorrentOnKodi(url).subscribe(() => {
+          console.log('has played');
+          this.presentToast(`Torrent ${title} has started to play`);
+        });
       });
     }
   }
