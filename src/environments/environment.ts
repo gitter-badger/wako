@@ -16,10 +16,6 @@ export const environment = {
     baseUrl: 'https://api.themoviedb.org/3',
     api_key: '4f0d500599005839404a81de7e99e9ba'
   },
-  omdb: {
-    baseUrl: 'http://www.omdbapi.com',
-    tokenUrl: 'http://www.omdbapi.com/src/application.js'
-  },
   kodi: {
     storageHostsKey: 'kodi_hosts',
     storageCurrentHostKey: 'kodi_current_host'
