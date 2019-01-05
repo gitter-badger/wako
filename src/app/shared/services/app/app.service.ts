@@ -1,7 +1,7 @@
 import { Storage } from '@ionic/storage';
 import { Platform, ToastController } from '@ionic/angular';
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, of, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
@@ -13,6 +13,7 @@ import { TraktOauthRevokeForm } from '../trakt/forms/oauth/trakt-oauth-revoke.fo
 import { HttpService } from '../http/http.service';
 import { CacheService } from '../cache.service';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,8 @@ export class AppService {
 
   isAuthenticated$ = new ReplaySubject<boolean>(1);
 
+  appVersion$ = new BehaviorSubject('');
+
   constructor(
     private iab: InAppBrowser,
     private storage: Storage,
@@ -29,7 +32,8 @@ export class AppService {
     private mobileHttpClient: HTTP,
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private appVersion: AppVersion
   ) {
     this.initializeApp();
   }
@@ -47,6 +51,10 @@ export class AppService {
 
       if (this.platform.is('cordova')) {
         this.splashScreen.hide();
+
+        this.appVersion.getVersionNumber().then(version => {
+          this.appVersion$.next(version);
+        });
       }
 
       setTimeout(() => {

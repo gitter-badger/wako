@@ -13,6 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './shared/shared.module';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SearchTorrentComponent } from './pages/torrents/search-torrent/search-torrent.component';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, SearchTorrentComponent],
@@ -29,7 +30,7 @@ import { SearchTorrentComponent } from './pages/torrents/search-torrent/search-t
     }),
     SharedModule
   ],
-  providers: [SplashScreen, InAppBrowser, HTTP, Keyboard],
+  providers: [SplashScreen, InAppBrowser, HTTP, Keyboard, AppVersion],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
