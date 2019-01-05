@@ -1,0 +1,9 @@
+{
+  "appId": "io.wako",
+  "appName": "wako",
+  "bundledWebRuntime": false,
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  }
+}

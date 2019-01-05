@@ -1,0 +1,40 @@
+<ion-header class="search-list">
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-back-button color="light"></ion-back-button> </ion-buttons>
+    <ion-title>Kodi - Configuration</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="processForm()" *ngIf="form" [formGroup]="form">
+    <ion-item>
+      Connection status:
+      <ion-note slot="end">
+        <ion-badge *ngIf="settingsOk" color="success">OK</ion-badge>
+        <ion-badge *ngIf="!settingsOk" color="danger">KO</ion-badge>
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>Host IP/address</ion-label>
+      <ion-input type="text" name="host" formControlName="host" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Host Port</ion-label>
+      <ion-input type="number" name="port" formControlName="port" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Login (optional)</ion-label>
+      <ion-input type="text" name="login" formControlName="login"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Password (optional)</ion-label>
+      <ion-input type="password" name="password" formControlName="password"></ion-input>
+    </ion-item>
+    <div padding>
+      <ion-button slot="end" [disabled]="!form.valid" block class="button-md-main" type="submit">
+        Save host
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

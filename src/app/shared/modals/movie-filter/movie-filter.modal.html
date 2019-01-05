@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Filters</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="light" (click)="dismiss()"> <ion-icon name="close"></ion-icon> </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label>Rating</ion-label>
+      <ion-select [(ngModel)]="filters.rating" multiple="false">
+        <ion-select-option *ngFor="let rating of ratings" [value]="rating.value"> {{rating.text}} </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Genre</ion-label>
+      <ion-select [(ngModel)]="filters.genre" multiple="false">
+        <ion-select-option *ngFor="let genre of genres" [value]="genre.slug"> {{genre.name}} </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Certification</ion-label>
+      <ion-select [(ngModel)]="filters.certification" multiple="false">
+        <ion-select-option *ngFor="let certification of certifications" [value]="certification.slug">
+          {{certification.name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Year</ion-label>
+      <ion-input [(ngModel)]="filters.year"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button color="danger" (click)="reset()"> Reset</ion-button>
+  <ion-button ion-button (click)="apply()"> Apply</ion-button>
+</ion-content>
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-back-button color="light"></ion-back-button> </ion-buttons>
+    <ion-title *ngIf="episode">{{ episode.code }} - {{ show.title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!episode"> <ion-spinner class="center"></ion-spinner> </ion-content>
+
+<ion-content *ngIf="episode">
+  <div class="header">
+    <div class="backdrop" [style.background-image]="'url(' + show.images_url.backdrop + ')'"></div>
+    <div class="content">
+      <ion-grid fixed="true">
+        <ion-row class="first-row">
+          <ion-col size="4" class="poster"><img [src]="show.images_url.poster"/></ion-col>
+          <ion-col size="5" no-padding>
+            <ion-button
+              (click)="toggleWatched()"
+              size="small"
+              class="toggle-seen"
+              [color]="episode.watched ? 'primary' : 'light'"
+            >
+              <ion-icon slot="icon-only" name="eye"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="3" text-right class="rating-container">
+            <div class="rates">
+              <ion-text color="warning" class="rating">{{ episode.rating | number: '1.0-1' }}</ion-text>
+              <ion-text color="warning">/10</ion-text>
+              <div text-left class="votes">
+                <ion-text color="warning">{{ episode.votes | number: '1.0-0' }}</ion-text>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col offset="4">
+            <div class="details">
+              <ion-text color="medium">
+                {{ show.certification ? show.certification : 'N/A' }} | {{ show.firstAired | date: 'y-MM-dd' }} |
+                {{ episode.runtime * 60 | wmFormatTime: '%hh %Mmin' }} <br />
+                {{ show.genres.join(', ') }}
+              </ion-text>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+
+  <ion-segment color="secondary" [(ngModel)]="segment">
+    <ion-segment-button value="torrents"> <ion-label> Sources </ion-label> </ion-segment-button>
+    <ion-segment-button value="overview"> <ion-label> Overview</ion-label> </ion-segment-button>
+  </ion-segment>
+
+  <div [ngSwitch]="segment">
+    <ion-card *ngSwitchCase="'overview'">
+      <ion-card-content> {{ show.overview }} </ion-card-content>
+    </ion-card>
+
+    <div *ngSwitchCase="'torrents'">
+      <wk-torrent-list
+        [filter]="{
+          episodeCode: episode.code,
+          title: show.title,
+          year: show.year,
+          category: 'tv'
+        }"
+        [torrents]="torrents"
+        (torrentsFound)="torrents = $event"
+      ></wk-torrent-list>
+    </div>
+  </div>
+</ion-content>
+
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

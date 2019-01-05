@@ -1,0 +1,13 @@
+ion-item {
+  border-left: 4px solid var(--ion-color-danger);
+  margin-left: 17px;
+
+  ion-label {
+    font-size: 0.9em;
+  }
+
+  p {
+    text-align: right;
+    font-size: 0.8em;
+  }
+}

@@ -1,0 +1,64 @@
+.media-content {
+  width: auto !important;
+  margin-bottom: 10px !important;
+
+  .poster {
+    position: relative;
+
+    ion-text {
+      font-weight: bold;
+      color: white;
+    }
+
+    .has-been-watched,
+    .has-had-to-watch-list {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+
+    .rating {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+    }
+
+    .certification {
+      position: absolute;
+      top: 25px;
+      right: 5px;
+      font-style: italic;
+      font-size: 0.6em;
+    }
+
+    .total-episodes-to-watch {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+
+    .title {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      width: 130px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    wk-has-torrents {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+    }
+
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: black;
+      opacity: 0.3;
+    }
+  }
+}

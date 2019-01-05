@@ -1,0 +1,51 @@
+<ion-footer>
+  <ion-toolbar *ngIf="kodiModalService.modalOpened">
+    <ion-buttons slot="start">
+      <ion-button color="warning" (click)="kodiModalService.toggleRemoteModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="!kodiModalService.modalOpened">
+    <ion-buttons slot="start">
+      <ion-button *ngIf="!kodiService.isConnectedToHost" color="light" (click)="kodiService.connectToDefaultHost()">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+      <ion-button *ngIf="kodiService.isConnectedToHost" color="warning" (click)="kodiModalService.toggleRemoteModal()">
+        <ion-icon name="logo-game-controller-a"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="kodiProperties && kodiProperties.player.isPlaying">
+      <ion-button color="primary" *ngIf="!kodiProperties.player.isPaused" (click)="inputExecuteAction('pause')">
+        <ion-icon name="pause"></ion-icon>
+      </ion-button>
+      <ion-button color="primary" *ngIf="kodiProperties.player.isPaused" (click)="inputExecuteAction('play')">
+        <ion-icon name="play"></ion-icon>
+      </ion-button>
+
+      <ion-button color="primary"><!-- separator?--></ion-button>
+
+      <ion-button color="primary" (click)="inputExecuteAction('stop')">
+        <ion-icon name="square"></ion-icon>
+      </ion-button>
+
+      <ion-button color="primary"><!-- separator?--></ion-button>
+
+      <ion-button color="primary" (click)="inputExecuteAction('stepback')">
+        <ion-icon name="rewind"></ion-icon>
+      </ion-button>
+
+      <ion-button color="primary"><!-- separator?--></ion-button>
+
+      <ion-button color="primary" (click)="inputExecuteAction('stepforward')">
+        <ion-icon name="fastforward"></ion-icon>
+      </ion-button>
+      <ion-button color="primary"><!-- separator?--></ion-button>
+
+      <ion-button color="primary" fill="clear" (click)="toggleOsd()">
+        <ion-icon name="information-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,16 @@
+<ion-spinner *ngIf="loading && twinMovies.length === 0" class="center"></ion-spinner>
+
+<ion-list *ngIf="!loading && twinMovies.length === 0"> <ion-item>No movies found</ion-item> </ion-list>
+
+<ion-grid *ngIf="twinMovies.length > 0">
+  <ion-row *ngIf="!virtualScroll">
+    <ion-col *ngFor="let movie of _movies" size="6"> <wk-movie-item [movie]="movie"> </wk-movie-item> </ion-col>
+  </ion-row>
+
+  <ion-virtual-scroll *ngIf="virtualScroll" [items]="twinMovies" approxItemHeight="180px">
+    <ion-row *virtualItem="let item">
+      <ion-col size="6"> <wk-movie-item [movie]="item.movie1"> </wk-movie-item> </ion-col>
+      <ion-col size="6" *ngIf="item.movie2"> <wk-movie-item [movie]="item.movie2"> </wk-movie-item> </ion-col>
+    </ion-row>
+  </ion-virtual-scroll>
+</ion-grid>

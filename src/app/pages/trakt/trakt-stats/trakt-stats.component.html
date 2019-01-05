@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button color="light" (click)="clickOpenMenu($event)"></ion-menu-button>
+    </ion-buttons>
+    <ion-title> Trakt Stats</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title> Hi {{ username }} </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <!--<p>Is Auth {{ appService.isAuthenticated$ | async }}</p>-->
+      <p>Total movies watched: {{ stats?.movies.watched }}</p>
+      <p>Total episodes watched: {{ stats?.episodes.watched }}</p>
+      <ion-button color="secondary" (click)="logout()">Logout</ion-button>
+      <ion-button (click)="clearCache()">Clear APP Cache</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

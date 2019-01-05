@@ -1,0 +1,16 @@
+<ion-header class="search-list">
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-menu-button color="light"></ion-menu-button> </ion-buttons>
+    <ion-title>Shows</ion-title>
+  </ion-toolbar>
+  <ion-toolbar> <ion-searchbar (ionChange)="onSearch($event)" debounce="500"> </ion-searchbar> </ion-toolbar>
+</ion-header>
+
+<ion-content appScrollWatcher (ionScrollStart)="hideKeyboard();" [scrollEvents]="true">
+  <wk-show-list [loading]="searching" [shows]="shows"></wk-show-list>
+
+  <ion-infinite-scroll (ionInfinite)="searchNextPage()">
+    <ion-infinite-scroll-content [loadingSpinner]="null"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

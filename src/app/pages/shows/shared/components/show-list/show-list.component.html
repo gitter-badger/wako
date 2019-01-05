@@ -1,0 +1,9 @@
+<ion-spinner *ngIf="loading && shows.length === 0" class="center"></ion-spinner>
+
+<ion-list *ngIf="!loading && shows.length === 0"> <ion-item>No shows found</ion-item> </ion-list>
+
+<ion-grid *ngIf="shows.length > 0">
+  <ion-row wrap>
+    <ion-col *ngFor="let show of shows" size="6"> <wk-show-item [show]="show"> </wk-show-item> </ion-col>
+  </ion-row>
+</ion-grid>

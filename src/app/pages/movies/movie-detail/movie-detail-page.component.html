@@ -1,0 +1,111 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-back-button color="light"></ion-back-button> </ion-buttons>
+    <ion-title *ngIf="movie">{{ movie.title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!movie"> <ion-spinner class="center"></ion-spinner> </ion-content>
+
+<ion-content appScrollWatcher [scrollEvents]="true" *ngIf="movie">
+  <div class="header">
+    <div class="backdrop" [style.background-image]="'url(' + movie.images_url.backdrop + ')'"></div>
+    <div class="content">
+      <ion-grid fixed="true">
+        <ion-row class="first-row">
+          <ion-col size="4" class="poster"><img [src]="movie.images_url.poster"/></ion-col>
+          <ion-col size="5" no-padding>
+            <ion-button size="small" color="medium" (click)="showTrailer()">
+              <ion-icon slot="icon-only" name="film"></ion-icon>
+            </ion-button>
+            <ion-button
+              (click)="toggleWatched()"
+              size="small"
+              class="toggle-seen"
+              [color]="hasBeenWatched ? 'primary' : 'medium'"
+            >
+              <ion-icon name="eye"></ion-icon>
+            </ion-button>
+            <ion-button (click)="toggleWish()" size="small" [color]="hasBeenAddedToWatchList ? 'primary' : 'medium'">
+              <ion-icon name="md-bookmark"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="3" text-right class="rating-container">
+            <div class="rates">
+              <ion-text color="warning" class="rating"
+                >{{ movie.rating ? (movie.rating | number: '1.0-1') : '-' }}
+              </ion-text>
+              <ion-text color="warning">/10</ion-text>
+              <div text-left class="votes">
+                <ion-text color="warning">{{ movie.votes ? (movie.votes | number: '1.0-0') : '-' }}</ion-text>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col offset="4">
+            <div class="details">
+              <ion-text color="medium">
+                {{ movie.certification ? movie.certification : 'N/A' }} |
+                {{ movie.runtime * 60 | wmFormatTime: '%hh%Mmin' }} |
+                {{ movie.released ? movie.released : movie.year }} <br />
+                {{ movie.genres.join(', ') }}<br />
+              </ion-text>
+              <ion-text color="medium"> idmb Rating: {{ imdbItem ? imdbItem.rating : '-' }} </ion-text>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+
+  <ion-segment color="secondary" (ionChange)="segmentChanged($event)" [(ngModel)]="segment">
+    <ion-segment-button value="torrents"> <ion-label> Sources </ion-label> </ion-segment-button>
+
+    <ion-segment-button value="overview"> <ion-label>Overview</ion-label> </ion-segment-button>
+
+    <ion-segment-button value="related">
+      <ion-label
+        >More like this
+        <ion-spinner *ngIf="relatedMoviesIsLoading" class="loading-torrent"></ion-spinner>
+      </ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div [ngSwitch]="segment">
+    <div *ngSwitchCase="'torrents'">
+      <wk-torrent-list
+        [filter]="{
+          imdbId: movie.imdbId,
+          title: movie.title,
+          alternativeTitles: movie.alternative_titles,
+          year: movie.year,
+          category: 'movies'
+        }"
+        [torrents]="torrents"
+        (torrentsFound)="torrents = $event"
+      >
+      </wk-torrent-list>
+    </div>
+
+    <ion-card *ngSwitchCase="'overview'">
+      <ion-card-header>
+        <ion-card-subtitle *ngIf="movie.tagline && movie.tagline.length > 0">{{ movie.tagline }}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content> {{ movie.overview }} </ion-card-content>
+    </ion-card>
+
+    <div *ngSwitchCase="'related'">
+      <ion-card *ngIf="!relatedMoviesIsLoading && relatedMovies.length === 0">
+        <ion-card-content> No movies found</ion-card-content>
+      </ion-card>
+
+      <div *ngIf="!relatedMoviesIsLoading && relatedMovies.length > 0">
+        <wk-movie-list [movies]="relatedMovies" [virtualScroll]="false"></wk-movie-list>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

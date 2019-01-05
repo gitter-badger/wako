@@ -1,0 +1,123 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-back-button color="light"></ion-back-button> </ion-buttons>
+    <ion-title *ngIf="show">{{show.title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="!show"> <ion-spinner class="center"></ion-spinner> </ion-content>
+
+<ion-content appScrollWatcher [scrollEvents]="true" *ngIf="show">
+  <div class="header">
+    <div class="backdrop" [style.background-image]="'url('+(show.images_url.backdrop)+')'"></div>
+    <div class="content">
+      <ion-grid fixed="true">
+        <ion-row class="first-row">
+          <ion-col size="4" class="poster"><img [src]="show.images_url.poster"/></ion-col>
+          <ion-col size="5" no-padding>
+            <ion-button size="small" color="medium" (click)="showTrailer()">
+              <ion-icon slot="icon-only" name="film"></ion-icon>
+            </ion-button>
+            <ion-button *ngIf="doIWatchThisShow" (click)="removeShow()" size="small" color="light">
+              <ion-icon name="md-trash"></ion-icon>
+            </ion-button>
+          </ion-col>
+          <ion-col size="3" text-right class="rating-container">
+            <div class="rates">
+              <ion-text color="warning" class="rating">{{show.rating|number:'1.0-1'}}</ion-text>
+              <ion-text color="warning">/10</ion-text>
+              <div text-left class="votes"><ion-text color="warning">{{show.votes|number:'1.0-0'}}</ion-text></div>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col offset="4">
+            <div class="details">
+              <ion-text color="medium">
+                {{show.certification ? show.certification : 'N/A'}} | {{show.firstAired|date:'y-MM-dd'}} <br />
+                {{show.genres.join(', ')}}
+              </ion-text>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+  </div>
+
+  <ion-segment color="secondary" [(ngModel)]="segment">
+    <ion-segment-button value="seasons">
+      <ion-label>
+        Seasons
+        <ion-spinner *ngIf="!initialized" class="loading-seasons"></ion-spinner>
+        <span *ngIf="initialized">({{seasons.length}})</span>
+      </ion-label>
+    </ion-segment-button>
+
+    <ion-segment-button value="overview"> <ion-label> Overview</ion-label> </ion-segment-button>
+  </ion-segment>
+
+  <div [ngSwitch]="segment">
+    <ion-card *ngSwitchCase="'overview'"> <ion-card-content> {{show.overview}} </ion-card-content> </ion-card>
+
+    <div *ngSwitchCase="'seasons'">
+      <div *ngIf="initialized" class="season-list">
+        <ion-list *ngFor="let season of seasons" no-margin>
+          <ion-item no-padding class="is-season">
+            <ion-note slot="start">
+              <ion-button
+                (click)="toggleWatchSeason(season)"
+                size="small"
+                [color]="season.totalEpisodesWatched === season.episodeCount ? 'primary' : (season.totalEpisodesWatched > 0 ? 'danger' : 'light')"
+                class="toggle-seen-season"
+              >
+                <ion-icon name="eye"></ion-icon>
+              </ion-button>
+            </ion-note>
+            <ion-label (click)="displaySeasonEpisodes[season.traktNumber] = !displaySeasonEpisodes[season.traktNumber]">
+              {{season.title}} - {{season.totalEpisodesWatched}}/{{season.episodeCount}}
+            </ion-label>
+            <ion-note
+              slot="end"
+              (click)="displaySeasonEpisodes[season.traktNumber] = !displaySeasonEpisodes[season.traktNumber]"
+            >
+              <ion-icon [name]="displaySeasonEpisodes[season.traktNumber] ? 'arrow-down' : 'arrow-up'"></ion-icon>
+            </ion-note>
+          </ion-item>
+          <div *ngIf="displaySeasonEpisodes[season.traktNumber]" class="episode-list">
+            <ion-item
+              *ngFor="let episode of season.episodes"
+              [ngClass]="{'not-aired':!isAiredEpisodes[episode.code]}"
+              class="episode-item"
+            >
+              <ion-note slot="start">
+                <ion-button
+                  (click)="toggleWatchEpisode(season, episode)"
+                  size="small"
+                  [color]="episode.watched ? 'primary' : 'light'"
+                  class="toggle-seen-episode"
+                >
+                  <ion-icon name="eye"></ion-icon>
+                </ion-button>
+              </ion-note>
+              <ion-label (click)="goToEpisodeDetail(episode)">
+                <h2 class="episode-title">{{episode.title}} {{episode.code}}</h2>
+                <h3 class="episode-code">{{episode.code}}</h3>
+                <p>Aired on {{episode.firstAired | date:'y-MM-dd'}}</p>
+              </ion-label>
+              <ion-note slot="end" text-right>
+                <em>{{(episode.runtime * 60)|wmFormatTime:'%H:%M'}}</em><br />
+                <wk-has-torrents
+                  *ngIf="!episode.watched && isAiredEpisodes[episode.code]"
+                  [filter]="{ title: show.title, year: show.year, category:'tv', episodeCode: episode.code}"
+                >
+                </wk-has-torrents>
+              </ion-note>
+            </ion-item>
+          </div>
+        </ion-list>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

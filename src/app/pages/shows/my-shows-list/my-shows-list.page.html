@@ -1,0 +1,12 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-menu-button color="light"></ion-menu-button> </ion-buttons>
+    <ion-title>My Shows ({{shows.length}})</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content appScrollWatcher [scrollEvents]="true">
+  <wk-show-list [loading]="loading" [shows]="shows"></wk-show-list>
+</ion-content>
+
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

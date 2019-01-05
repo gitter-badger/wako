@@ -1,0 +1,28 @@
+.kodi-remote {
+  .ion-range {
+    padding: 0 !important;
+  }
+
+  .nav {
+    ion-button {
+      font-size: 1.8em;
+    }
+
+    img {
+      position: absolute;
+      opacity: 0.3;
+    }
+  }
+
+  ion-label.media-label {
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0;
+  }
+
+  .controls {
+    ion-button {
+      font-size: 1em;
+    }
+  }
+}

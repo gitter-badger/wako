@@ -1,0 +1,46 @@
+<ion-header class="search-list">
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-menu-button color="light"></ion-menu-button> </ion-buttons>
+    <ion-title>Kodi - Remote</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="hosts.length">
+    <ion-card-header> <ion-card-subtitle> Saved hosts </ion-card-subtitle> </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item-sliding *ngFor="let host of hosts">
+          <ion-item color="darkLight" [button]="true" (click)="setHost(host)">
+            {{ host.host }}:{{ host.port }}
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="delete(host)"><ion-icon name="trash"></ion-icon></ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="hosts.length">
+    <ion-card-content>
+      <ion-list>
+        <ion-item color="darkLight">
+          <ion-label>Default host</ion-label>
+          <ion-select [(ngModel)]="currentHostId" (ngModelChange)="setDefaultHost($event)">
+            <ion-select-option *ngFor="let host of hosts" [value]="host.host + ':' + host.port">{{
+              host.host + ':' + host.port
+            }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="hosts.length === 0"> <ion-card-content> No host configured yet </ion-card-content> </ion-card>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="primary" (click)="add()"> <ion-icon name="add"></ion-icon> </ion-fab-button>
+  </ion-fab>
+</ion-content>
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

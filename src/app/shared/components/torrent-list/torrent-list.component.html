@@ -1,0 +1,40 @@
+<div *ngIf="initialized">
+  <ion-card *ngIf="providers.length === 0"> <ion-card-content> No provider configured</ion-card-content> </ion-card>
+  <ion-card *ngIf="!retrievingTorrents && totalTorrents === 0">
+    <ion-card-content> No torrent found</ion-card-content>
+  </ion-card>
+
+  <ion-list *ngIf="retrievingTorrents" lines="none">
+    <ion-item *ngFor="let data of loadingByProvider">
+      <ion-label>
+        {{ data.providerName }}
+        <ion-spinner name="dots" *ngIf="data.isLoading"></ion-spinner>
+      </ion-label>
+
+      <p slot="end">
+        <ion-badge *ngIf="!data.isLoading" [color]="data.torrents.length > 0 ? 'success' : 'primary'">{{
+          data.torrents.length
+        }}</ion-badge>
+
+        <ion-button *ngIf="data.isLoading" color="danger" (click)="stopLoadingProvider(data)">
+          <ion-icon slot="icon-only" name="close-circle-outline"></ion-icon>
+        </ion-button>
+      </p>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngIf="!retrievingTorrents && totalTorrents > 0">
+    <ion-list-header>
+      <ion-label color="primary"> 1080p ({{ torrents1080p.length }})</ion-label>
+    </ion-list-header>
+    <wk-torrent-item *ngFor="let torrent of (torrents1080p | wmTorrentSort)" [torrent]="torrent"></wk-torrent-item>
+    <ion-list-header>
+      <ion-label color="primary"> 720p ({{ torrents720p.length }})</ion-label>
+    </ion-list-header>
+    <wk-torrent-item *ngFor="let torrent of (torrents720p | wmTorrentSort)" [torrent]="torrent"></wk-torrent-item>
+    <ion-list-header>
+      <ion-label color="primary"> Other ({{ torrentsOther.length }})</ion-label>
+    </ion-list-header>
+    <wk-torrent-item *ngFor="let torrent of (torrentsOther | wmTorrentSort)" [torrent]="torrent"></wk-torrent-item>
+  </ion-list>
+</div>

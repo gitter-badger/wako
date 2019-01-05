@@ -1,0 +1,160 @@
+<ion-content class="kodi-remote">
+  <ion-list lines="none">
+    <div *ngIf="!kodiProperties"><p>Could not connect to host</p></div>
+
+    <div *ngIf="kodiProperties">
+      <ion-item no-padding>
+        <ion-range
+          min="0"
+          max="100"
+          step="10"
+          pin="true"
+          snaps="true"
+          [(ngModel)]="kodiProperties.app.volume"
+          (ngModelChange)="setVolume(kodiProperties.app.volume)"
+        >
+          <ion-icon mode="ios" size="small" slot="start" name="volume-low"></ion-icon>
+          <ion-icon mode="ios" slot="end" name="volume-high"></ion-icon>
+        </ion-range>
+      </ion-item>
+
+      <div class="nav">
+        <img *ngIf="thumbnail" [src]="thumbnail" alt="" />
+        <ion-grid no-padding>
+          <ion-row text-center>
+            <ion-col>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('up')">
+                <ion-icon mode="ios" name="arrow-up"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col text-right>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('left')">
+                <ion-icon mode="ios" name="arrow-back"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('select')">
+                <ion-icon mode="ios" name="disc"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-left>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('right')">
+                <ion-icon mode="ios" name="arrow-forward"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col text-right>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('back')">
+                <ion-icon mode="ios" name="arrow-round-back"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('down')">
+                <ion-icon mode="ios" name="arrow-down"></ion-icon>
+              </ion-button>
+            </ion-col>
+
+            <ion-col text-left>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('contextmenu')">
+                <ion-icon mode="ios" name="md-arrow-dropdown"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+      <div *ngIf="kodiProperties.player.isPlaying" class="controls">
+        <ion-item>
+          <ion-label text-center text-wrap class="media-label">
+            {{kodiProperties.player.media.label}} <br />
+            <em>{{range.value|wmFormatTime}} / {{kodiProperties.player.media.totalSeconds|wmFormatTime}}</em>
+          </ion-label>
+        </ion-item>
+        <ion-item class="media-info">
+          <ion-range
+            min="0"
+            [max]="kodiProperties.player.media.totalSeconds"
+            step="10"
+            mode="ios"
+            [value]="kodiProperties.player.media.currentSeconds"
+            (ionBlur)="setPlayerSeek($event)"
+            (ionFocus)="focusOnPlayerSeek()"
+            #range
+          >
+          </ion-range>
+        </ion-item>
+
+        <ion-grid>
+          <ion-row>
+            <ion-col text-center>
+              <ion-button
+                mode="ios"
+                fill="clear"
+                *ngIf="!kodiProperties.player.isPaused"
+                (click)="inputExecuteAction('pause')"
+              >
+                <ion-icon mode="ios" name="pause"></ion-icon>
+              </ion-button>
+              <ion-button
+                mode="ios"
+                fill="clear"
+                *ngIf="kodiProperties.player.isPaused"
+                (click)="inputExecuteAction('play')"
+              >
+                <ion-icon mode="ios" name="play"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('stop')">
+                <ion-icon mode="ios" name="square"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="setEnabledSubtitle()">
+                <ion-icon
+                  mode="ios"
+                  name="text"
+                  [color]="kodiProperties.player.subtitleEnabled ? 'primary' : 'light'"
+                ></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="toggleOsd()">
+                <ion-icon mode="ios" name="information-circle"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('bigstepback')">
+                <ion-icon mode="ios" name="arrow-back"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('stepback')">
+                <ion-icon mode="ios" name="rewind"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('stepforward')">
+                <ion-icon mode="ios" name="fastforward"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col text-center>
+              <ion-button mode="ios" fill="clear" (click)="inputExecuteAction('bigstepforward')">
+                <ion-icon mode="ios" name="arrow-forward"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+  </ion-list>
+</ion-content>
+
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

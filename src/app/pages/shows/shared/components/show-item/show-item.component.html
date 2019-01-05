@@ -1,0 +1,68 @@
+<!--<div class="media-content" (click)="showDetail()">-->
+<!--<div class="poster">-->
+<!--<div class="background"></div>-->
+<!--<img *ngIf="isLoadingPoster !== false" src="assets/imgs/item-not-found.png" />-->
+<!--<img-->
+<!--*ngIf="show.images_url.poster"-->
+<!--[ngStyle]="{ display: isLoadingPoster !== false ? 'none' : '' }"-->
+<!--(load)="isLoadingPoster = false"-->
+<!--[src]="show.images_url.poster"-->
+<!--/>-->
+<!--<ion-badge-->
+<!--color="danger"-->
+<!--class="total-episodes-to-watch"-->
+<!--*ngIf="show.totalEpisodesWatched > 0 && show.totalEpisodesWatched < show.airedEpisodes"-->
+<!--&gt;-->
+<!--{{ show.airedEpisodes - show.totalEpisodesWatched }}-->
+<!--</ion-badge>-->
+<!--</div>-->
+<!--<div class="texts-content">-->
+<!--<ion-label class="title" color="danger">{{ show.title }}</ion-label>-->
+<!--<ion-row wrap>-->
+<!--<ion-col size="4">-->
+<!--<ion-badge item-left>-->
+<!--<ion-icon name="film"></ion-icon>-->
+<!--{{ show.airedEpisodes }}-->
+<!--</ion-badge>-->
+<!--</ion-col>-->
+<!--<ion-col size="4">-->
+<!--<ion-badge item-right color="medium">{{ show.rating | number: '1.0-1' }}</ion-badge>-->
+<!--</ion-col>-->
+<!--<ion-col size="4">-->
+<!--<ion-badge item-right color="medium">{{ show.certification ? show.certification : 'NR' }}</ion-badge>-->
+<!--</ion-col>-->
+<!--</ion-row>-->
+<!--</div>-->
+<!--</div>-->
+
+<div class="media-content" (click)="showDetail()">
+  <div class="poster">
+    <div class="background"></div>
+    <img *ngIf="isLoadingPoster !== false" src="assets/imgs/item-not-found.png" />
+    <img
+      *ngIf="show.images_url.poster"
+      [ngStyle]="{ display: isLoadingPoster !== false ? 'none' : '' }"
+      (load)="isLoadingPoster = false"
+      [src]="show.images_url.poster"
+    />
+
+    <ion-badge
+      color="primary"
+      class="total-episodes-to-watch"
+      *ngIf="show.totalEpisodesWatched > 0 && show.totalEpisodesWatched < show.airedEpisodes"
+    >
+      {{ show.airedEpisodes - show.totalEpisodesWatched }}
+    </ion-badge>
+
+    <ion-text class="certification">{{ show.certification ? show.certification : 'NR' }}</ion-text>
+
+    <ion-text class="rating">
+      <ion-icon color="warning" name="star"></ion-icon>
+      {{ show.rating | number: '1.0-1' }}
+    </ion-text>
+
+    <ion-text class="title">
+      <ion-text> {{ show.title }} </ion-text>
+    </ion-text>
+  </div>
+</div>

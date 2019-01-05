@@ -1,0 +1,29 @@
+<ion-app>
+  <ion-split-pane>
+    <ion-menu
+      [disabled]="(appService.isAuthenticated$ | async) === false"
+      [swipeGesture]="appService.isAuthenticated$ | async"
+    >
+      <ion-header>
+        <ion-toolbar color="darkLight" text-center><img src="assets/imgs/icon.png" alt=""/></ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list lines="none" *ngFor="let menuPage of menuPages">
+          <ion-list-header>
+            <ion-icon [name]="menuPage.icon" [color]="menuPage.color"></ion-icon>
+            <ion-label [color]="menuPage.color">{{ menuPage.title }}</ion-label>
+          </ion-list-header>
+
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of menuPage.pages">
+            <ion-item detail="false" [routerDirection]="'root'" [routerLink]="[p.url]">
+              <ion-icon slot="start" [ngClass]="menuPage.color" [name]="p.icon"></ion-icon>
+              <ion-label> {{ p.title }} </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+
+    <ion-router-outlet main></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

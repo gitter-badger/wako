@@ -1,0 +1,134 @@
+@import '../../../../theme/base-media-detail';
+
+.season-list {
+  padding: 0 9px;
+
+  .toggle-seen-season,
+  .toggle-seen-episode {
+    padding: 0 0.4em;
+
+    ion-icon {
+      font-size: 2em;
+    }
+  }
+
+  .episode-list {
+    border-left: 4px solid var(--ion-color-danger);
+  }
+
+  .episode-item {
+    &.not-aired {
+      opacity: 0.3;
+      font-style: italic;
+    }
+
+    .episode-title {
+      font-size: 1rem;
+    }
+
+    .episode-code {
+      font-size: 0.9rem;
+    }
+
+    ion-thumbnail {
+      min-width: 3rem;
+      min-height: 0;
+      margin-right: 8px;
+    }
+
+    ion-thumbnail img {
+      max-width: 100% !important;
+      width: auto !important;
+    }
+
+    ion-badge {
+      margin: 2px 0;
+    }
+  }
+}
+
+.show-detail {
+  ion-button {
+    --padding-start: 4px;
+    --padding-end: 4px;
+  }
+
+  ion-card.header {
+    margin: 0;
+    border-radius: 0;
+    width: 100%;
+
+    ion-card-header {
+      height: 210px;
+      background-size: 100%;
+    }
+
+    ion-card-content {
+      padding: 0px 4px;
+      margin-bottom: 20px;
+
+      .poster {
+        padding-left: 0;
+        position: relative;
+        width: 100px;
+        top: -70px;
+
+        img {
+          border: 2px solid white;
+          border-radius: 4px;
+        }
+      }
+
+      .first-row {
+        height: 35px;
+
+        button {
+          padding: 0 !important;
+          background-color: red;
+        }
+      }
+
+      .rating-container {
+        padding: 0;
+        top: -7px;
+        font-style: italic;
+
+        .rating {
+          font-size: 2.4em;
+        }
+
+        .rates {
+          display: inline-block;
+          position: relative;
+          top: -10px;
+        }
+
+        .votes {
+          position: relative;
+          top: -11px;
+          font-size: 0.9em;
+        }
+      }
+
+      .details {
+        font-size: 0.8em;
+        margin: 10px 0;
+      }
+    }
+  }
+
+  ion-segment {
+    padding: 0px 8px;
+    margin-bottom: 20px;
+
+    .loading-seasons {
+      width: 13px;
+      height: 13px;
+    }
+  }
+
+  ion-card {
+    margin: 8px;
+    box-shadow: none;
+  }
+}

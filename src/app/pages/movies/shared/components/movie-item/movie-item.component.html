@@ -1,0 +1,28 @@
+<div class="media-content" (click)="showDetail()">
+  <div class="poster">
+    <div class="background"></div>
+    <img *ngIf="isLoadingPoster !== false" src="assets/imgs/item-not-found.png" />
+    <img
+      *ngIf="movie.images_url.poster"
+      [ngStyle]="{ display: isLoadingPoster !== false ? 'none' : '' }"
+      (load)="isLoadingPoster = false"
+      [src]="movie.images_url.poster"
+    />
+
+    <ion-icon class="has-been-watched" color="light" *ngIf="hasBeenWatched" name="eye"></ion-icon>
+    <ion-icon class="has-had-to-watch-list" color="light" *ngIf="hasBeenAddedToWatchList" name="md-bookmark"></ion-icon>
+    <ion-text class="certification">{{ movie.certification ? movie.certification : 'NR' }}</ion-text>
+
+    <ion-text class="rating">
+      <ion-icon color="warning" name="star"></ion-icon>
+      {{ movie.rating | number: '1.0-1' }}
+    </ion-text>
+
+    <ion-text class="title">
+      <ion-text> {{ movie.title }} </ion-text>
+    </ion-text>
+
+    <wk-has-torrents [filter]="{ imdbId: movie.imdbId, title: movie.title, year: movie.year, category: 'movies' }">
+    </wk-has-torrents>
+  </div>
+</div>

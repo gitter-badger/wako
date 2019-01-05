@@ -1,0 +1,17 @@
+<ion-item button="true" (click)="download()" [detail]="false">
+  <ion-label text-wrap>
+    {{ torrent.title }}
+
+    <ion-icon size="small" color="warning" *ngIf="torrent.isAccurate === true" name="beer"></ion-icon>
+  </ion-label>
+
+  <p slot="end">
+    <ion-badge slot="start" color="{{ torrent.seeds >= 20 ? 'success' : 'danger' }}"
+      >{{ torrent.seeds }}/{{ torrent.peers }}
+    </ion-badge>
+    <br />
+    <ion-note slot="end">{{ torrent.size_str ? torrent.size_str : (torrent.size_bytes | bsFileSize) }}</ion-note>
+    <br />
+    <ion-badge slot="end" color="dark">{{ torrent.providerName }}</ion-badge>
+  </p>
+</ion-item>

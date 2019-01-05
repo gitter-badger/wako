@@ -1,0 +1,40 @@
+<ion-header class="search-list">
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-menu-button color="light"></ion-menu-button> </ion-buttons>
+    <ion-title>Providers</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="providersMap.size > 0">
+    <ion-card-header> <ion-card-subtitle>Saved Providers</ion-card-subtitle> </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item-sliding *ngFor="let provider of (providersMap | keyvalue)">
+          <ion-item color="darkLight">
+            <ion-label>{{ provider.value.name }} </ion-label>
+            <ion-toggle
+              [(ngModel)]="provider.value.enabled"
+              [color]="provider.value.enabled ? 'success' : 'primary'"
+              (ngModelChange)="toggleProvider(provider.key, $event)"
+            ></ion-toggle>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="delete(provider.key)">
+              <ion-icon name="trash"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="providersMap.size === 0">
+    <ion-card-content> No provider configured yet</ion-card-content>
+  </ion-card>
+
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+    <ion-fab-button color="primary" (click)="add()"> <ion-icon name="add"></ion-icon> </ion-fab-button>
+  </ion-fab>
+</ion-content>
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

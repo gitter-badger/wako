@@ -1,0 +1,37 @@
+<ion-header class="search-list">
+  <ion-toolbar>
+    <ion-buttons slot="start"> <ion-menu-button color="light"></ion-menu-button> </ion-buttons>
+    <ion-title>Movies</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="primary" class="filter-group">
+      <ion-button
+        color="medium"
+        size="small"
+        class="button-filter"
+        (click)="displayFilter()"
+        [ngClass]="{ 'lighter-bg': totalFilter > 0 }"
+      >
+        <ion-icon slot="icon-only" name="options"> </ion-icon>
+      </ion-button>
+      <ion-badge slot="right" *ngIf="totalFilter > 0">{{ totalFilter }}</ion-badge>
+    </ion-buttons>
+    <ion-searchbar (ionChange)="onSearch($event)" debounce="500"> </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content appScrollWatcher (ionScrollStart)="hideKeyboard()" [scrollEvents]="true">
+  <wk-movie-list [loading]="searching" [movies]="movies"></wk-movie-list>
+
+  <!--<ion-fab horizontal="end" vertical="bottom" slot="fixed">-->
+  <!--<ion-fab-button mini (click)="pickRandomMovie()">-->
+  <!--<ion-icon name="shuffle"></ion-icon>-->
+  <!--</ion-fab-button>-->
+
+  <!--</ion-fab>-->
+
+  <ion-infinite-scroll (ionInfinite)="searchNextPage()">
+    <ion-infinite-scroll-content [loadingSpinner]="null"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>
