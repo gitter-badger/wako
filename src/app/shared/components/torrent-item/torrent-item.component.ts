@@ -1,13 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { Torrent } from '../../entities/torrent';
 import { Platform, ToastController } from '@ionic/angular';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { KodiPlayerStopForm } from '../../services/kodi/forms/player/kodi-player-stop.form';
 import { KodiPlayerOpenForm } from '../../services/kodi/forms/player/kodi-player-open.form';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { KodiHttpService } from '../../services/kodi/services/kodi-http.service';
 import { KodiService } from '../../services/app/kodi.service';
 import { ElementumQueryParam } from '../../entities/elementum-query-param';
+import { BaseHttpService } from '../../services/http/base-http.service';
 
 @Component({
   selector: 'wk-torrent-item',
@@ -30,8 +31,22 @@ export class TorrentItemComponent {
   download() {
     let obs = null;
 
-    if (this.torrent.url instanceof Observable) {
-      obs = this.torrent.url;
+    if (!this.torrent.url.match('magnet')) {
+      obs = BaseHttpService.request<string>(
+        {
+          method: 'GET',
+          url: this.torrent.url,
+          responseType: 'text'
+        },
+        '1d'
+      ).pipe(
+        map(_html => {
+          if (_html.match(/(magnet[^"]+)/)) {
+            return _html.match(/(magnet[^"]+)/).shift();
+          }
+          return this.torrent.url;
+        })
+      );
     } else {
       obs = of(this.torrent.url);
     }

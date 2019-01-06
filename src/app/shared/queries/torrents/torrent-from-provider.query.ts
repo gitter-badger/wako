@@ -226,22 +226,7 @@ export class TorrentFromProviderQuery {
                 rows.forEach(row => {
                   const title = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.title);
 
-                  let torrentUrl = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.url);
-
-                  if (!torrentUrl.match('magnet')) {
-                    torrentUrl = ProviderHttp.request<string>(
-                      {
-                        method: 'GET',
-                        url: torrentUrl,
-                        responseType: 'text'
-                      },
-                      '1d'
-                    ).pipe(
-                      map(_html => {
-                        return _html.match(/(magnet[^"]+)/).shift();
-                      })
-                    );
-                  }
+                  const torrentUrl = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.url);
 
                   const torrent = <Torrent>{
                     providerName: provider.name,
