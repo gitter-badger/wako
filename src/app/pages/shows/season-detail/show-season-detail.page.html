@@ -62,10 +62,14 @@
     <div *ngSwitchCase="'seasons'">
       <div *ngIf="initialized" class="season-list">
         <ion-list *ngFor="let season of seasons" no-margin>
-          <ion-item no-padding class="is-season">
-            <ion-note slot="start">
+          <ion-item
+            no-padding
+            class="is-season"
+            (click)="displaySeasonEpisodes[season.traktNumber] = !displaySeasonEpisodes[season.traktNumber]"
+          >
+            <ion-note slot="start" no-margin>
               <ion-button
-                (click)="toggleWatchSeason(season)"
+                (click)="toggleWatchSeason($event, season)"
                 size="small"
                 [color]="season.totalEpisodesWatched === season.episodeCount ? 'primary' : (season.totalEpisodesWatched > 0 ? 'danger' : 'light')"
                 class="toggle-seen-season"
@@ -73,11 +77,10 @@
                 <ion-icon name="eye"></ion-icon>
               </ion-button>
             </ion-note>
-            <ion-label (click)="displaySeasonEpisodes[season.traktNumber] = !displaySeasonEpisodes[season.traktNumber]">
-              {{season.title}} - {{season.totalEpisodesWatched}}/{{season.episodeCount}}
-            </ion-label>
+            <ion-label> {{season.title}} - {{season.totalEpisodesWatched}}/{{season.episodeCount}} </ion-label>
             <ion-note
               slot="end"
+              no-margin
               (click)="displaySeasonEpisodes[season.traktNumber] = !displaySeasonEpisodes[season.traktNumber]"
             >
               <ion-icon [name]="displaySeasonEpisodes[season.traktNumber] ? 'arrow-down' : 'arrow-up'"></ion-icon>
@@ -86,12 +89,13 @@
           <div *ngIf="displaySeasonEpisodes[season.traktNumber]" class="episode-list">
             <ion-item
               *ngFor="let episode of season.episodes"
+              (click)="goToEpisodeDetail(episode)"
               [ngClass]="{'not-aired':!isAiredEpisodes[episode.code]}"
               class="episode-item"
             >
-              <ion-note slot="start">
+              <ion-note slot="start" no-margin>
                 <ion-button
-                  (click)="toggleWatchEpisode(season, episode)"
+                  (click)="toggleWatchEpisode($event, season, episode)"
                   size="small"
                   [color]="episode.watched ? 'primary' : 'light'"
                   class="toggle-seen-episode"
@@ -99,12 +103,12 @@
                   <ion-icon name="eye"></ion-icon>
                 </ion-button>
               </ion-note>
-              <ion-label (click)="goToEpisodeDetail(episode)">
-                <h2 class="episode-title">{{episode.title}} {{episode.code}}</h2>
+              <ion-label>
+                <h2 class="episode-title">{{episode.title}}</h2>
                 <h3 class="episode-code">{{episode.code}}</h3>
                 <p>Aired on {{episode.firstAired | date:'y-MM-dd'}}</p>
               </ion-label>
-              <ion-note slot="end" text-right>
+              <ion-note slot="end" text-right no-margin>
                 <em>{{(episode.runtime * 60)|wmFormatTime:'%H:%M'}}</em><br />
                 <wk-has-torrents
                   *ngIf="!episode.watched && isAiredEpisodes[episode.code]"

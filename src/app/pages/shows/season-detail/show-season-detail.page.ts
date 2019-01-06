@@ -147,6 +147,7 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
   }
 
   private isAired(episode: Episode) {
+    console.log('isAired');
     return episode.firstAired.getTime() < Date.now() && episode.firstAired.getFullYear() > 1970;
   }
 
@@ -160,7 +161,9 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
     this.browserService.open(`http://www.imdb.com/title/${this.show.imdbId}/`);
   }
 
-  toggleWatchEpisode(season: Season, episode: Episode) {
+  toggleWatchEpisode(event: MouseEvent, season: Season, episode: Episode) {
+    event.stopImmediatePropagation();
+
     let obs = null;
 
     if (episode.watched) {
@@ -186,7 +189,9 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
     });
   }
 
-  toggleWatchSeason(season: Season) {
+  toggleWatchSeason(event: MouseEvent, season: Season) {
+    event.stopImmediatePropagation();
+
     let obs = null;
 
     if (season.totalEpisodesWatched === season.episodeCount) {
