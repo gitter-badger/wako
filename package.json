@@ -9,7 +9,10 @@
     "build": "ng run app:build:production && npx cap copy",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build:ios": "ionic cordova build ios --prod",
+    "build:android": "ionic cordova build android --prod",
+    "build:all": "npm run build:android && npm run build:ios"
   },
   "private": true,
   "dependencies": {
