@@ -2,7 +2,7 @@
 <widget id="io.wako" version="1.0" xmlns="http://www.w3.org/ns/widgets">
     <name>wako</name>
     <description>Trakt.tv client</description>
-    <author>JB</author>
+    <author>JumBay</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
