@@ -2,7 +2,7 @@ import { Storage } from '@ionic/storage';
 import { Platform, ToastController } from '@ionic/angular';
 import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { environment } from '../../../../environments/environment';
@@ -14,6 +14,9 @@ import { HttpService } from '../http/http.service';
 import { CacheService } from '../cache.service';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { NavigationEnd, Router } from '@angular/router';
+import { Firebase } from '@ionic-native/firebase/ngx';
+import { TraktUsersMeForm } from '../trakt/forms/users/trakt-users-me.form';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +36,9 @@ export class AppService {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private toastCtrl: ToastController,
-    private appVersion: AppVersion
+    private appVersion: AppVersion,
+    private router: Router,
+    private firebase: Firebase
   ) {
     this.initializeApp();
   }
@@ -46,6 +51,7 @@ export class AppService {
 
       this.storage.get(environment.trakt.storageTokenKey).then(token => {
         TraktApiService.setToken(token);
+
         this.isAuthenticated$.next(token !== null);
       });
 
@@ -56,6 +62,8 @@ export class AppService {
           this.appVersion$.next(version);
         });
       }
+
+      this.initAnalytics();
 
       setTimeout(() => {
         CacheService.prune();
@@ -138,6 +146,27 @@ export class AppService {
         );
       })
     );
+  }
+
+  private initAnalytics() {
+    this.isAuthenticated$.subscribe(isAuth => {
+      if (isAuth) {
+        TraktUsersMeForm.submit().subscribe(user => {
+          if (user && this.platform.is('cordova')) {
+            this.firebase.setUserId(user.ids.slug).then(() => {
+              console.log('firebase: setUserId done');
+              this.router.events
+                .pipe(filter(event => event instanceof NavigationEnd))
+                .subscribe((event: NavigationEnd) => {
+                  this.firebase.logEvent('Navigate', event.url).then(e => {
+                    console.log('firebase: Navigate', { e });
+                  });
+                });
+            });
+          }
+        });
+      }
+    });
   }
 
   logout() {

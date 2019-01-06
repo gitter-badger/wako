@@ -14,6 +14,7 @@ import { SharedModule } from './shared/shared.module';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SearchTorrentComponent } from './pages/torrents/search-torrent/search-torrent.component';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { Firebase } from '@ionic-native/firebase/ngx';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, SearchTorrentComponent],
@@ -30,7 +31,7 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
     }),
     SharedModule
   ],
-  providers: [SplashScreen, InAppBrowser, HTTP, Keyboard, AppVersion],
+  providers: [SplashScreen, InAppBrowser, HTTP, Keyboard, AppVersion, Firebase],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

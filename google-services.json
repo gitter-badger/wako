@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "499380921015",
+    "firebase_url": "https://wako-c6f03.firebaseio.com",
+    "project_id": "wako-c6f03",
+    "storage_bucket": "wako-c6f03.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499380921015:android:7456e1bfa9569aa8",
+        "android_client_info": {
+          "package_name": "io.wako"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "499380921015-to6mt5kr7ls78osnav875na23qeccqlp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASV_ZV8svxZmBE-swqITeaAuBWFU62GWw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
