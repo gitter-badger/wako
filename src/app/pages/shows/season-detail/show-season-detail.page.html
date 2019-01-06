@@ -92,6 +92,7 @@
               (click)="goToEpisodeDetail(episode)"
               [ngClass]="{'not-aired':!isAiredEpisodes[episode.code]}"
               class="episode-item"
+              no-padding
             >
               <ion-note slot="start" no-margin>
                 <ion-button
