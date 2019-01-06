@@ -2,11 +2,12 @@ import { Component, Input } from '@angular/core';
 import { Torrent } from '../../entities/torrent';
 import { Platform, ToastController } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
-import { KodiPlayStopForm } from '../../services/kodi/forms/player/kodi-play-stop.form';
-import { KodiPlayOpenForm } from '../../services/kodi/forms/player/kodi-play-open.form';
+import { KodiPlayerStopForm } from '../../services/kodi/forms/player/kodi-player-stop.form';
+import { KodiPlayerOpenForm } from '../../services/kodi/forms/player/kodi-player-open.form';
 import { switchMap } from 'rxjs/operators';
 import { KodiHttpService } from '../../services/kodi/services/kodi-http.service';
 import { KodiService } from '../../services/app/kodi.service';
+import { ElementumQueryParam } from '../../entities/elementum-query-param';
 
 @Component({
   selector: 'wk-torrent-item',
@@ -16,6 +17,9 @@ import { KodiService } from '../../services/app/kodi.service';
 export class TorrentItemComponent {
   @Input()
   torrent: Torrent;
+
+  @Input()
+  elementumQueryParam: ElementumQueryParam;
 
   constructor(private platform: Platform, private toastController: ToastController, private kodiService: KodiService) {}
 
@@ -76,9 +80,28 @@ export class TorrentItemComponent {
   }
 
   private playTorrentOnKodi(torrentUrl: string) {
-    return KodiPlayStopForm.submit().pipe(
+    return KodiPlayerStopForm.submit().pipe(
       switchMap(() => {
-        return KodiPlayOpenForm.submit(`plugin://plugin.video.elementum/play?uri=${encodeURIComponent(torrentUrl)}`);
+        let url = `plugin://plugin.video.elementum/play?uri=${encodeURIComponent(torrentUrl)}`;
+        if (this.elementumQueryParam.category) {
+          url += '&type=' + this.elementumQueryParam.category;
+        }
+        if (this.elementumQueryParam.tmdbId) {
+          url += '&tmdb=' + this.elementumQueryParam.tmdbId;
+        }
+        if (this.elementumQueryParam.tmdbShowId) {
+          url += '&show=' + this.elementumQueryParam.tmdbShowId;
+        }
+        if (this.elementumQueryParam.seasonNumber) {
+          url += '&season=' + this.elementumQueryParam.seasonNumber;
+        }
+        if (this.elementumQueryParam.episodeNumber) {
+          url += '&episode=' + this.elementumQueryParam.episodeNumber;
+        }
+        if (this.elementumQueryParam.query) {
+          url += '&query=' + encodeURIComponent(this.elementumQueryParam.query);
+        }
+        return KodiPlayerOpenForm.submit(url);
       })
     );
   }

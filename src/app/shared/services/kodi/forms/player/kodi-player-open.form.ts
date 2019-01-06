@@ -1,6 +1,6 @@
 import { KodiHttpService } from '../../services/kodi-http.service';
 
-export class KodiPlayOpenForm {
+export class KodiPlayerOpenForm {
   static submit(fileUrl: string) {
     return KodiHttpService.doAction<any>(
       'Player.Open',

@@ -9,6 +9,7 @@
 <ion-content [scrollEvents]="true" (scroll)="hideKeyboard()">
   <wk-torrent-list
     *ngIf="searchInput.length > 0"
+    [elementumQueryParam]="{ query: searchInput, category: 'movie' }"
     [filter]="{ query: searchInput, category: 'movies' }"
   ></wk-torrent-list>
 </ion-content>

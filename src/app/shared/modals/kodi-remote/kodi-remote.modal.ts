@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { KodiService } from '../../services/app/kodi.service';
 import { KodiApplicationSetVolumeForm } from '../../services/kodi/forms/application/kodi-application-set-volume.form';
 import { KodiPropertiesStructure } from '../../services/kodi/structures/kodi-properties.structure';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { KodiExcuteActionCommand } from '../../services/kodi/commands/kodi-excute-action.command';
 import { KodiSeekToCommand } from '../../services/kodi/commands/kodi-seek-to.command';
@@ -20,9 +19,9 @@ export class KodiRemoteModal implements OnInit, OnDestroy {
 
   private timerSeek;
 
-  thumbnail: SafeUrl;
+  thumbnail = null;
 
-  constructor(private kodiService: KodiService, private sanitizer: DomSanitizer, private modalCtrl: ModalController) {}
+  constructor(private kodiService: KodiService, private modalCtrl: ModalController) {}
 
   ngOnInit() {
     this.setKodiProperties();
@@ -55,7 +54,7 @@ export class KodiRemoteModal implements OnInit, OnDestroy {
         }, 1000);
 
         if (this.kodiProperties.player.media.thumbnail) {
-          this.thumbnail = this.sanitizer.bypassSecurityTrustUrl(this.kodiProperties.player.media.thumbnail);
+          this.thumbnail = this.kodiProperties.player.media.thumbnail;
         }
       }
     });

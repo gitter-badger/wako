@@ -6,6 +6,7 @@ import { ProviderService } from '../../services/app/provider.service';
 import { finalize, tap } from 'rxjs/operators';
 import { TorrentFromProviderQuery } from '../../queries/torrents/torrent-from-provider.query';
 import { Provider } from '../../entities/provider';
+import { ElementumQueryParam } from '../../entities/elementum-query-param';
 
 @Component({
   selector: 'wk-torrent-list',
@@ -18,6 +19,8 @@ export class TorrentListComponent implements OnChanges, OnDestroy {
   @Output() torrentsFound = new EventEmitter<Torrent[]>();
 
   @Input() torrents: Torrent[] | null = null;
+
+  @Input() elementumQueryParam: ElementumQueryParam;
 
   totalTorrents = 0;
 

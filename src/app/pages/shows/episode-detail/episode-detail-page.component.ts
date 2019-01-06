@@ -10,6 +10,7 @@ import { TraktHistoryAddForm } from '../../../shared/services/trakt/forms/histor
 import { TraktShowsGetProgressWatchedForm } from '../../../shared/services/trakt/forms/shows/trakt-shows-get-progress-watched.form';
 import { TraktEventService } from '../../../shared/services/trakt/services/trakt-event.service';
 import { Torrent } from '../../../shared/entities/torrent';
+import { ElementumQueryParam } from '../../../shared/entities/elementum-query-param';
 
 @Component({
   templateUrl: 'episode-detail-page.component.html',
@@ -23,6 +24,10 @@ export class EpisodeDetailPageComponent implements OnInit {
   segment = 'torrents';
 
   torrents: Torrent[] = null;
+
+  elementumQueryParam: ElementumQueryParam = {
+    category: 'episode'
+  };
 
   constructor(private route: ActivatedRoute) {}
 
@@ -68,6 +73,10 @@ export class EpisodeDetailPageComponent implements OnInit {
     this.episode = episode;
 
     this.show = show;
+
+    this.elementumQueryParam.tmdbShowId = show.tmdbId;
+    this.elementumQueryParam.seasonNumber = episode.traktSeasonNumber;
+    this.elementumQueryParam.episodeNumber = episode.traktNumber;
   }
 
   toggleWatched() {

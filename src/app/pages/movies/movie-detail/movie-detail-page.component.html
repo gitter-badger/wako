@@ -75,6 +75,7 @@
   <div [ngSwitch]="segment">
     <div *ngSwitchCase="'torrents'">
       <wk-torrent-list
+        [elementumQueryParam]="elementumQueryParam"
         [filter]="{
           imdbId: movie.imdbId,
           title: movie.title,

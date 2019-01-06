@@ -61,6 +61,7 @@
 
     <div *ngSwitchCase="'torrents'">
       <wk-torrent-list
+        [elementumQueryParam]="elementumQueryParam"
         [filter]="{
           episodeCode: episode.code,
           title: show.title,

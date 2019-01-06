@@ -15,6 +15,7 @@ import { ImdbItem, ImdbItemQuery } from '../../../shared/queries/imdb/imdb-item.
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Torrent } from '../../../shared/entities/torrent';
+import { ElementumQueryParam } from '../../../shared/entities/elementum-query-param';
 
 @Component({
   templateUrl: 'movie-detail-page.component.html',
@@ -36,6 +37,10 @@ export class MovieDetailPageComponent {
   imdbItem: ImdbItem;
 
   torrents: Torrent[] | null = null;
+
+  elementumQueryParam: ElementumQueryParam = {
+    category: 'movie'
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -82,6 +87,8 @@ export class MovieDetailPageComponent {
     if (!movie) {
       return this.movieNotFound();
     }
+
+    this.elementumQueryParam.tmdbId = movie.tmdbId;
 
     this.movie = movie;
 

@@ -1,4 +1,5 @@
 <ion-content class="kodi-remote">
+  <div class="thumbnail" *ngIf="thumbnail" [ngStyle]="{'background-image':'url(' + thumbnail + ')'}"></div>
   <ion-list lines="none">
     <div *ngIf="!kodiProperties"><p>Could not connect to host</p></div>
 
@@ -19,7 +20,6 @@
       </ion-item>
 
       <div class="nav">
-        <img *ngIf="thumbnail" [src]="thumbnail" alt="" />
         <ion-grid no-padding>
           <ion-row text-center>
             <ion-col>
@@ -68,14 +68,15 @@
         </ion-grid>
       </div>
       <div *ngIf="kodiProperties.player.isPlaying" class="controls">
-        <ion-item>
-          <ion-label text-center text-wrap class="media-label">
+        <ion-item color="none">
+          <ion-label color="none" text-center text-wrap class="media-label">
             {{kodiProperties.player.media.label}} <br />
             <em>{{range.value|wmFormatTime}} / {{kodiProperties.player.media.totalSeconds|wmFormatTime}}</em>
           </ion-label>
         </ion-item>
-        <ion-item class="media-info">
+        <ion-item color="none" class="media-info">
           <ion-range
+            color="none"
             min="0"
             [max]="kodiProperties.player.media.totalSeconds"
             step="10"

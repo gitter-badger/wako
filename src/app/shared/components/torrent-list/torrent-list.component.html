@@ -27,14 +27,28 @@
     <ion-list-header>
       <ion-label color="primary"> 1080p ({{ torrents1080p.length }})</ion-label>
     </ion-list-header>
-    <wk-torrent-item *ngFor="let torrent of (torrents1080p | wmTorrentSort)" [torrent]="torrent"></wk-torrent-item>
+    <wk-torrent-item
+      *ngFor="let torrent of (torrents1080p | wmTorrentSort)"
+      [elementumQueryParam]="elementumQueryParam"
+      [torrent]="torrent"
+    ></wk-torrent-item>
+
     <ion-list-header>
       <ion-label color="primary"> 720p ({{ torrents720p.length }})</ion-label>
     </ion-list-header>
-    <wk-torrent-item *ngFor="let torrent of (torrents720p | wmTorrentSort)" [torrent]="torrent"></wk-torrent-item>
+    <wk-torrent-item
+      *ngFor="let torrent of (torrents720p | wmTorrentSort)"
+      [elementumQueryParam]="elementumQueryParam"
+      [torrent]="torrent"
+    ></wk-torrent-item>
+
     <ion-list-header>
       <ion-label color="primary"> Other ({{ torrentsOther.length }})</ion-label>
     </ion-list-header>
-    <wk-torrent-item *ngFor="let torrent of (torrentsOther | wmTorrentSort)" [torrent]="torrent"></wk-torrent-item>
+    <wk-torrent-item
+      *ngFor="let torrent of (torrentsOther | wmTorrentSort)"
+      [elementumQueryParam]="elementumQueryParam"
+      [torrent]="torrent"
+    ></wk-torrent-item>
   </ion-list>
 </div>
