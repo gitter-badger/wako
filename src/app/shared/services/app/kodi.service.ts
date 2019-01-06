@@ -11,10 +11,6 @@ import { ReplaySubject, Subscription } from 'rxjs';
 
 import { KodiInputSendTextForm } from '../kodi/forms/input/kodi-input-send-text.form';
 
-import { AppState, Plugins } from '@capacitor/core';
-
-const { App } = Plugins;
-
 @Injectable({
   providedIn: 'root'
 })
@@ -42,15 +38,15 @@ export class KodiService {
         console.log('Resume');
         this.connectToDefaultHost();
       });
-      App.addListener('appStateChange', (state: AppState) => {
-        this.ngZone.run(() => {
-          if (state.isActive) {
-            this.connectToDefaultHost();
-          } else {
-            this.disconnect();
-          }
-        });
-      });
+      // App.addListener('appStateChange', (state: AppState) => {
+      //   this.ngZone.run(() => {
+      //     if (state.isActive) {
+      //       this.connectToDefaultHost();
+      //     } else {
+      //       this.disconnect();
+      //     }
+      //   });
+      // });
     }
 
     this.connectToDefaultHost();
