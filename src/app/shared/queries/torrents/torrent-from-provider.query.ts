@@ -37,36 +37,47 @@ export class TorrentFromProviderQuery {
     return results;
   }
 
-  private static getQuery(provider: Provider, filter: TorrentsQueryFilter) {
+  private static getProviderReplacement(provider: Provider, filter: TorrentsQueryFilter) {
     const category = filter.category;
 
-    let query = '';
-    if (filter.query) {
-      query = filter.query.trim();
-    } else {
-      const rpl = {
-        title: filter.title,
-        imdbId: filter.imdbId,
-        episodeCode: filter.episodeCode,
-        year: filter.year ? filter.year : ''
-      };
-      if (filter.alternativeTitles) {
-        Object.keys(filter.alternativeTitles).forEach(language => {
-          rpl['title.' + language] = filter.alternativeTitles[language];
-        });
-      }
-
-      let keywords = '';
-      if (category === 'movies' && provider.movie) {
-        keywords = provider.movie.keywords;
-      } else if (category === 'tv' && provider.episode) {
-        keywords = provider.episode.keywords;
-      }
-
-      query = this.replacer(keywords, rpl).trim();
+    let season = '';
+    let episode = '';
+    if (filter.episodeCode && filter.episodeCode.match(/S([0-9]+)E([0-9]+)/i)) {
+      const matches = filter.episodeCode.match(/S([0-9]+)E([0-9]+)/i);
+      season = matches[1] || '';
+      episode = matches[2] || '';
     }
 
-    return query;
+    const rpl = {
+      title: filter.title,
+      imdbId: filter.imdbId,
+      episodeCode: filter.episodeCode,
+      year: filter.year ? filter.year : '',
+      season: season,
+      episode: episode,
+      query: '',
+      token: '{token}' // Keep that for later
+    };
+    if (filter.alternativeTitles) {
+      Object.keys(filter.alternativeTitles).forEach(language => {
+        rpl['title.' + language] = filter.alternativeTitles[language];
+      });
+    }
+
+    let keywords = '';
+    if (category === 'movies' && provider.movie) {
+      keywords = provider.movie.keywords;
+    } else if (category === 'tv' && provider.episode) {
+      keywords = provider.episode.keywords;
+    }
+
+    if (filter.query) {
+      rpl.query = encodeURIComponent(filter.query.trim());
+    } else {
+      rpl.query = encodeURIComponent(this.replacer(keywords, rpl).trim());
+    }
+
+    return rpl;
   }
 
   private static _getData(provider: Provider, filter: TorrentsQueryFilter): Observable<Torrent[]> {
@@ -80,11 +91,20 @@ export class TorrentFromProviderQuery {
       return of([]);
     }
 
-    const query = this.getQuery(provider, filter);
+    let providerUrl = provider.base_url + (category === 'movies' ? provider.movie.query : provider.episode.query);
 
-    const isAccurate = category === 'movies' && query.match('imdbId') !== null;
+    const providerReplacement = this.getProviderReplacement(provider, filter);
 
-    console.log(`Getting "${query}" on ${category} from ${provider.name} provider`);
+    providerUrl = this.replacer(providerUrl, providerReplacement);
+
+    let isAccurate = false;
+    if (category === 'movies') {
+      if (provider.base_url.match('imdbId') !== null || provider.movie.keywords.match('imdbId') !== null) {
+        isAccurate = true;
+      }
+    }
+
+    console.log(`Getting "${providerUrl}" on ${category} from ${provider.name} provider`);
 
     let tokenObs = of(null);
 
@@ -117,17 +137,14 @@ export class TorrentFromProviderQuery {
 
     return tokenObs.pipe(
       switchMap(token => {
-        let url = provider.base_url + (category === 'movies' ? provider.movie.query : provider.episode.query);
-
-        url = this.replacer(url, {
-          query: encodeURIComponent(query),
+        providerUrl = this.replacer(providerUrl, {
           token: token
         });
 
         return ProviderHttp.request<any>(
           {
             method: 'GET',
-            url: url,
+            url: providerUrl,
             responseType: provider.response_type === 'json' ? 'json' : 'text'
           },
           provider.response_type === 'json' ? '1d' : null,
@@ -145,7 +162,7 @@ export class TorrentFromProviderQuery {
 
                 if (!results) {
                   console.log(
-                    `Total torrents found ${torrents.length} for "${query}" on ${category} from ${
+                    `Total torrents found ${torrents.length} for "${providerUrl}" on ${category} from ${
                       provider.name
                     } provider`
                   );
@@ -254,7 +271,9 @@ export class TorrentFromProviderQuery {
             }
 
             console.log(
-              `Total torrents found ${torrents.length} for "${query}" on ${category} from ${provider.name} provider`
+              `Total torrents found ${torrents.length} for "${providerUrl}" on ${category} from ${
+                provider.name
+              } provider`
             );
 
             return torrents;
@@ -271,12 +290,12 @@ export class TorrentFromProviderQuery {
     const cacheKey = provider.name + '_' + JSON.stringify(filter);
     return CacheService.get<Torrent[]>(cacheKey).pipe(
       switchMap(torrentsFromCache => {
-        if (torrentsFromCache) {
-          const query = filter.title + '' + (filter.episodeCode ? filter.episodeCode : '');
+        if (false && torrentsFromCache) {
+          const query = filter.title + ' ' + (filter.episodeCode ? filter.episodeCode : '');
           console.log(
-            `Total torrents found from cache ${torrentsFromCache.length} for "${query}" on ${filter.category} from ${
-              provider.name
-            } provider`
+            `Total torrents found from cache ${torrentsFromCache.length} for "${query.trim()}" on ${
+              filter.category
+            } from ${provider.name} provider`
           );
           return of(torrentsFromCache);
         }
