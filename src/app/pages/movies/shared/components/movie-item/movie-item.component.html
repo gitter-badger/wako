@@ -9,8 +9,8 @@
       [src]="movie.images_url.poster"
     />
 
-    <ion-icon class="has-been-watched" color="light" *ngIf="hasBeenWatched" name="eye"></ion-icon>
-    <ion-icon class="has-had-to-watch-list" color="light" *ngIf="hasBeenAddedToWatchList" name="md-bookmark"></ion-icon>
+    <ion-icon class="has-been-watched" color="white" *ngIf="hasBeenWatched" name="eye"></ion-icon>
+    <ion-icon class="has-had-to-watch-list" color="white" *ngIf="hasBeenAddedToWatchList" name="md-bookmark"></ion-icon>
     <ion-text class="certification">{{ movie.certification ? movie.certification : 'NR' }}</ion-text>
 
     <ion-text class="rating">

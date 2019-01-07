@@ -78,6 +78,14 @@
   --ion-color-shade: #2f3a48;
   --ion-color-tint: #495563;
 }
+.ion-color-white {
+  --ion-color-base: #ffffff;
+  --ion-color-base-rgb: 255, 255, 255;
+  --ion-color-contrast: #000000;
+  --ion-color-contrast-rgb: 0, 0, 0;
+  --ion-color-shade: #e0e0e0;
+  --ion-color-tint: #ffffff;
+}
 
 ion-toolbar {
   --background: var(--ion-color-dark);
