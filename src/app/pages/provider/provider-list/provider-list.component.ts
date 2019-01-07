@@ -30,7 +30,6 @@ export class ProviderListComponent implements OnInit {
   getList() {
     this.providerService.getMap().then(providers => {
       this.providersMap = providers;
-      console.log({ providers });
     });
   }
 
