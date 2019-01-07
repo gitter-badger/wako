@@ -14,6 +14,7 @@ export interface Provider {
       token: string;
     };
   };
+  separator?: string;
   movie?: {
     query: string;
     keywords: string;
