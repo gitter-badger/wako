@@ -147,7 +147,6 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
   }
 
   private isAired(episode: Episode) {
-    console.log('isAired');
     return episode.firstAired.getTime() < Date.now() && episode.firstAired.getFullYear() > 1970;
   }
 
