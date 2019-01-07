@@ -49,9 +49,10 @@ export class TorrentFromProviderQuery {
     }
 
     const rpl = {
-      title: filter.title,
+      title: filter.title ? filter.title.toLowerCase() : '',
+      titleFirstLetter: filter.title ? filter.title[0].toLowerCase() : '',
       imdbId: filter.imdbId,
-      episodeCode: filter.episodeCode,
+      episodeCode: filter.episodeCode ? filter.episodeCode.toLowerCase() : '',
       year: filter.year ? filter.year : '',
       season: season,
       episode: episode,
@@ -71,11 +72,18 @@ export class TorrentFromProviderQuery {
       keywords = provider.episode.keywords;
     }
 
+    let query = '';
     if (filter.query) {
-      rpl.query = encodeURIComponent(filter.query.trim());
+      query = filter.query.trim();
     } else {
-      rpl.query = encodeURIComponent(this.replacer(keywords, rpl).trim());
+      query = this.replacer(keywords, rpl).trim();
     }
+
+    if (provider.separator) {
+      query = query.replace(/\s/g, provider.separator);
+    }
+
+    rpl.query = encodeURIComponent(query);
 
     return rpl;
   }
@@ -141,9 +149,17 @@ export class TorrentFromProviderQuery {
           token: token
         });
 
+        const headers = {
+          'user-agent':
+            'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.21 Safari/537.36'
+        };
+        if (provider.response_type === 'text') {
+          headers['accept'] = 'text/html';
+        }
         return ProviderHttp.request<any>(
           {
             method: 'GET',
+            headers: headers,
             url: providerUrl,
             responseType: provider.response_type === 'json' ? 'json' : 'text'
           },
@@ -241,29 +257,33 @@ export class TorrentFromProviderQuery {
                 >;
 
                 rows.forEach(row => {
-                  const title = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.title);
+                  try {
+                    const title = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.title);
 
-                  const torrentUrl = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.url);
+                    const torrentUrl = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.url);
 
-                  const torrent = <Torrent>{
-                    providerName: provider.name,
-                    title: title,
-                    url: torrentUrl,
-                    seeds: +Function('row', 'code', `return eval(code)`)(row, provider.html_parser.seeds),
-                    peers: +Function('row', 'code', `return eval(code)`)(row, provider.html_parser.peers),
-                    quality: TorrentQualityTitleQuery.getData(title),
-                    isAccurate: isAccurate
-                  };
+                    const torrent = <Torrent>{
+                      providerName: provider.name,
+                      title: title,
+                      url: torrentUrl,
+                      seeds: +Function('row', 'code', `return eval(code)`)(row, provider.html_parser.seeds),
+                      peers: +Function('row', 'code', `return eval(code)`)(row, provider.html_parser.peers),
+                      quality: TorrentQualityTitleQuery.getData(title),
+                      isAccurate: isAccurate
+                    };
 
-                  const size = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.size);
+                    const size = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.size);
 
-                  if (Number(size)) {
-                    torrent.size_bytes = +size;
-                  } else {
-                    torrent.size_str = size;
+                    if (Number(size)) {
+                      torrent.size_bytes = +size;
+                    } else {
+                      torrent.size_str = size;
+                    }
+
+                    torrents.push(torrent);
+                  } catch (e) {
+                    console.log(`Error on getting row ${provider.name}`, e);
                   }
-
-                  torrents.push(torrent);
                 });
               } catch (e) {
                 console.log(`Error on provider ${provider.name}`, e, response);
