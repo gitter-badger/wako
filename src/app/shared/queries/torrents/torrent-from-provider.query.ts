@@ -310,7 +310,7 @@ export class TorrentFromProviderQuery {
     const cacheKey = provider.name + '_' + JSON.stringify(filter);
     return CacheService.get<Torrent[]>(cacheKey).pipe(
       switchMap(torrentsFromCache => {
-        if (false && torrentsFromCache) {
+        if (torrentsFromCache) {
           const query = filter.title + ' ' + (filter.episodeCode ? filter.episodeCode : '');
           console.log(
             `Total torrents found from cache ${torrentsFromCache.length} for "${query.trim()}" on ${
