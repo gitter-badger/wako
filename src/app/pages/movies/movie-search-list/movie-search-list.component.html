@@ -21,7 +21,7 @@
 </ion-header>
 
 <ion-content appScrollWatcher (ionScrollStart)="hideKeyboard()" [scrollEvents]="true">
-  <wk-movie-list [loading]="searching" [movies]="movies"></wk-movie-list>
+  <wk-movie-list [virtualScroll]="false" [loading]="searching" [movies]="movies"></wk-movie-list>
 
   <!--<ion-fab horizontal="end" vertical="bottom" slot="fixed">-->
   <!--<ion-fab-button mini (click)="pickRandomMovie()">-->
