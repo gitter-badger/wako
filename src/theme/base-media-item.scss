@@ -1,5 +1,8 @@
 .media-content {
-  width: auto !important;
+  max-width: 300px;
+  max-height: 450px;
+
+  height: 100%;
 
   .poster {
     position: relative;
