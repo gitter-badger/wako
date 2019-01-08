@@ -37,7 +37,7 @@ export class TorrentFromProviderQuery {
     return results;
   }
 
-  private static getProviderReplacement(provider: Provider, filter: TorrentsQueryFilter) {
+  public static getProviderReplacement(provider: Provider, filter: TorrentsQueryFilter) {
     const category = filter.category;
 
     let season = '';
@@ -88,7 +88,7 @@ export class TorrentFromProviderQuery {
     return rpl;
   }
 
-  private static _getData(provider: Provider, filter: TorrentsQueryFilter): Observable<Torrent[]> {
+  public static doRequest(provider: Provider, filter: TorrentsQueryFilter): Observable<Torrent[]> {
     const category = filter.category;
 
     if (category === 'movies' && !provider.movie) {
@@ -320,7 +320,7 @@ export class TorrentFromProviderQuery {
           return of(torrentsFromCache);
         }
 
-        return this._getData(provider, filter).pipe(tap(torrents => CacheService.set(cacheKey, torrents, '1d')));
+        return this.doRequest(provider, filter).pipe(tap(torrents => CacheService.set(cacheKey, torrents, '1d')));
       })
     );
   }

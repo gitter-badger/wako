@@ -107,6 +107,15 @@ export interface Provider {
 
 ```
 
+### Test a provider
+
+1. Clone the project, go into it, install dependencies `npm i`
+2. Edit the spec: `src/app/shared/queries/torrents/torrent-from-provider.query.spec.ts`
+3. Run the tests with `ng test`. This will open your browser and run the tests. Because of CORS issue
+   you might have, you should bypass them see (https://www.thepolyglotdeveloper.com/2014/08/bypass-cors-errors-testing-apis-locally)
+4. To debug your provider see what's going on here: `src/app/shared/queries/torrents/torrent-from-provider.query.ts:175`
+   if you set `response_type` to `json` or here: `src/app/shared/queries/torrents/torrent-from-provider.query.ts:251` in the other case
+
 # Screenshots
 
 ![](https://github.com/JumBay/wako/blob/master/resources/github/screen1.png?raw=true)
