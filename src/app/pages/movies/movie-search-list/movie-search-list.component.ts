@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { TraktMoviesFilterStructure } from '../../../shared/services/trakt/sturctures/movies/trakt-movies-filter.structure';
 import { SearchMoviesQuery } from '../../../shared/queries/movie/search-movies.query';
 import { MovieFilterModal } from '../../../shared/modals/movie-filter/movie-filter.modal';
+import { ErrorToastService } from '../../../shared/services/app/error-toast.service';
 
 @Component({
   templateUrl: 'movie-search-list.component.html'
@@ -57,7 +58,8 @@ export class MovieSearchListComponent implements OnInit {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private router: Router,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private errorToastService: ErrorToastService
   ) {}
 
   ngOnInit() {
@@ -130,21 +132,28 @@ export class MovieSearchListComponent implements OnInit {
       _filters = this.filters;
     }
 
-    const subscriber = SearchMoviesQuery.getData(this.searchInput, this.page, _filters).subscribe(movies => {
-      this.movies = this.movies.concat(movies);
+    const subscriber = SearchMoviesQuery.getData(this.searchInput, this.page, _filters).subscribe(
+      movies => {
+        this.movies = this.movies.concat(movies);
 
-      if (this.onlyWithTorrents) {
-        this.lastMoviesRetrievedWithTorrent = this.lastMoviesRetrievedWithTorrent.concat(movies);
+        if (this.onlyWithTorrents) {
+          this.lastMoviesRetrievedWithTorrent = this.lastMoviesRetrievedWithTorrent.concat(movies);
+        }
+
+        this.searching = false;
+
+        if (movies.length === 0) {
+          this.infiniteScroll.disabled = true;
+        }
+
+        this.infiniteScroll.complete();
+      },
+      () => {
+        this.searching = false;
+
+        this.errorToastService.create('Failed to load my shows');
       }
-
-      this.searching = false;
-
-      if (movies.length === 0) {
-        this.infiniteScroll.disabled = true;
-      }
-
-      this.infiniteScroll.complete();
-    });
+    );
 
     this.searcherSubscribers.push(subscriber);
   }
