@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ProviderService } from '../../../shared/services/app/provider.service';
+import { ProviderService } from '../../../../shared/services/app/provider.service';
 import { Router } from '@angular/router';
-import { Provider } from '../../../shared/entities/provider';
+import { Provider } from '../../../../shared/entities/provider';
 
 @Component({
   selector: 'wk-provider-set-json',
@@ -32,7 +32,7 @@ export class ProviderSetJsonComponent implements OnInit {
       this.providerService
         .set(json)
         .then(() => {
-          this.router.navigateByUrl('/providers');
+          this.router.navigateByUrl('/settings/providers');
         })
         .catch(err => {
           alert(err.message);

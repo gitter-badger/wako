@@ -15,9 +15,10 @@ import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SearchTorrentComponent } from './pages/torrents/search-torrent/search-torrent.component';
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Firebase } from '@ionic-native/firebase/ngx';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, SearchTorrentComponent],
+  declarations: [AppComponent, LoginComponent, SearchTorrentComponent, HomeComponent],
   entryComponents: [],
   imports: [
     BrowserModule,

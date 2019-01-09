@@ -4,20 +4,22 @@ import { UnAuthGuard } from './shared/services/app/guard/un-auth-guard.service';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './shared/services/app/guard/auth-guard.service';
 import { SearchTorrentComponent } from './pages/torrents/search-torrent/search-torrent.component';
+import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
+  {
+    path: '',
+    canActivate: [AuthGuard],
+    component: HomeComponent
+  },
   {
     path: 'login',
     canActivate: [UnAuthGuard],
     component: LoginComponent
   },
   {
-    path: '',
-    redirectTo: '/trakt',
-    pathMatch: 'full'
-  },
-  {
     path: 'search-provider',
+    canActivate: [AuthGuard],
     component: SearchTorrentComponent
   },
   {
@@ -31,20 +33,11 @@ const routes: Routes = [
     loadChildren: './pages/shows/shows.module#ShowsModule'
   },
   {
-    path: 'kodi',
+    path: 'settings',
     canActivate: [AuthGuard],
-    loadChildren: './pages/kodi/kodi.module#KodiModule'
-  },
-  {
-    path: 'trakt',
-    canActivate: [AuthGuard],
-    loadChildren: './pages/trakt/trakt.module#TraktModule'
-  },
-  {
-    path: 'providers',
-    canActivate: [AuthGuard],
-    loadChildren: './pages/provider/provider.module#ProviderModule'
+    loadChildren: './pages/settings/settings.module#SettingsModule'
   }
+
   // {
   //   path: '**',
   //   redirectTo: '/home',

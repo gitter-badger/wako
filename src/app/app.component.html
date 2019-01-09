@@ -3,9 +3,12 @@
     <ion-menu
       [disabled]="(appService.isAuthenticated$ | async) === false"
       [swipeGesture]="appService.isAuthenticated$ | async"
+      #menu
     >
       <ion-header>
-        <ion-toolbar color="darkLight" text-center><img src="assets/imgs/icon.png" alt=""/></ion-toolbar>
+        <ion-toolbar routerLink="/" (click)="menu.close()" color="darkLight" text-center
+          ><img src="assets/imgs/icon.png" alt="" />
+        </ion-toolbar>
       </ion-header>
       <ion-content>
         <ion-list lines="none" *ngFor="let menuPage of menuPages">

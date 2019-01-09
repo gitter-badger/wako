@@ -3,10 +3,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, Subject, Subscription } from 'rxjs';
-import { KodiService } from '../../../shared/services/app/kodi.service';
-import { KodiHostStructure } from '../../../shared/services/kodi/structures/kodi-host.structure';
-import { KodiHttpService } from '../../../shared/services/kodi/services/kodi-http.service';
-import { KodiPingForm } from '../../../shared/services/kodi/forms/ping/kodi-ping.form';
+import { KodiService } from '../../../../shared/services/app/kodi.service';
+import { KodiHostStructure } from '../../../../shared/services/kodi/structures/kodi-host.structure';
+import { KodiHttpService } from '../../../../shared/services/kodi/services/kodi-http.service';
+import { KodiPingForm } from '../../../../shared/services/kodi/forms/ping/kodi-ping.form';
 
 @Component({
   templateUrl: 'kodi-settings-page.component.html'
@@ -101,7 +101,7 @@ export class KodiSettingsPageComponent implements OnInit {
   }
 
   private addHostAndNavBack() {
-    this.kodiService.addHost(this.form.value).then(() => this.router.navigateByUrl('/kodi'));
+    this.kodiService.addHost(this.form.value).then(() => this.router.navigate(['../../'], { relativeTo: this.route }));
   }
 
   processForm() {

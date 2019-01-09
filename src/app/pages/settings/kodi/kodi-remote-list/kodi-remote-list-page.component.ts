@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { KodiService } from '../../../shared/services/app/kodi.service';
-import { KodiHostStructure } from '../../../shared/services/kodi/structures/kodi-host.structure';
+import { KodiService } from '../../../../shared/services/app/kodi.service';
+import { KodiHostStructure } from '../../../../shared/services/kodi/structures/kodi-host.structure';
 
 @Component({
   templateUrl: 'kodi-remote-list-page.component.html'
@@ -62,11 +62,11 @@ export class KodiRemoteListPageComponent implements OnInit {
   }
 
   add() {
-    this.router.navigateByUrl('/kodi/host/');
+    this.router.navigateByUrl('/settings/kodi/host/');
   }
 
   setHost(host: KodiHostStructure) {
-    this.router.navigateByUrl(`/kodi/host/${host.host}:${host.port}`);
+    this.router.navigateByUrl(`/settings/kodi/host/${host.host}:${host.port}`);
   }
 
   delete(host: KodiHostStructure) {

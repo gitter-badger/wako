@@ -65,19 +65,19 @@ export class AppComponent {
       title: 'Settings',
       pages: [
         {
-          url: '/kodi',
+          url: '/settings/kodi',
           icon: 'logo-youtube',
           title: 'Kodi'
         },
         {
-          url: '/trakt',
-          icon: 'log-in',
-          title: 'Trakt'
-        },
-        {
-          url: '/providers',
+          url: '/settings/providers',
           icon: 'wifi',
           title: 'Providers'
+        },
+        {
+          url: '/settings',
+          icon: 'settings',
+          title: 'Settings'
         }
       ]
     }

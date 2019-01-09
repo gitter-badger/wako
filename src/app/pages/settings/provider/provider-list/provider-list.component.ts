@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { filter } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
-import { ProviderService } from '../../../shared/services/app/provider.service';
-import { Provider } from '../../../shared/entities/provider';
+import { ProviderService } from '../../../../shared/services/app/provider.service';
+import { Provider } from '../../../../shared/entities/provider';
 
 @Component({
   selector: 'wk-provider-list',
@@ -41,7 +41,7 @@ export class ProviderListComponent implements OnInit {
   }
 
   add() {
-    this.router.navigateByUrl('/providers/set-json');
+    this.router.navigateByUrl('/settings/providers/set-json');
   }
 
   delete(key: string) {
