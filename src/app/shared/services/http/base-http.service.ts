@@ -206,7 +206,7 @@ export class BaseHttpService {
     }
   }
 
-  static get<T>(url: string, params?: any, cacheTime?: string, timeoutMs = 3000): Observable<T> {
+  static get<T>(url: string, params?: any, cacheTime?: string, timeoutMs = 10000): Observable<T> {
     return this.request<T>(
       {
         url: this.getApiBaseUrl() + HttpService.addParamsToUrl(url, params),
@@ -217,7 +217,7 @@ export class BaseHttpService {
     );
   }
 
-  static post<T>(url: string, body: Object, cacheTime?: string, timeoutMs = 3000): Observable<T> {
+  static post<T>(url: string, body: Object, cacheTime?: string, timeoutMs = 10000): Observable<T> {
     return this.request<T>(
       {
         url: this.getApiBaseUrl() + url,
@@ -229,7 +229,7 @@ export class BaseHttpService {
     );
   }
 
-  static put<T>(url: string, body: Object, cacheTime?: string, timeoutMs = 3000): Observable<T> {
+  static put<T>(url: string, body: Object, cacheTime?: string, timeoutMs = 10000): Observable<T> {
     return this.request<T>(
       {
         url: this.getApiBaseUrl() + url,
@@ -241,7 +241,7 @@ export class BaseHttpService {
     );
   }
 
-  static delete<T>(url: string, body: Object, cacheTime?: string, timeoutMs = 3000): Observable<T> {
+  static delete<T>(url: string, body: Object, cacheTime?: string, timeoutMs = 10000): Observable<T> {
     return this.request<T>(
       {
         url: this.getApiBaseUrl() + url,
