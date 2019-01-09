@@ -39,7 +39,10 @@ export class ImdbItemQuery {
           }
         });
 
-        imdbItem.description = (doc.querySelector('[itemprop="description"]') as HTMLDivElement).innerText.trim();
+        const descriptionEl = doc.querySelector('[itemprop="description"]') as HTMLDivElement;
+        if (descriptionEl) {
+          imdbItem.description = descriptionEl.innerText.trim();
+        }
 
         return imdbItem;
       })
