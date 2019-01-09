@@ -4,7 +4,7 @@ import { ShowsRoutingModule } from './shows-routing.module';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../../shared/shared.module';
-import { MyShowsListPage } from './my-shows-list/my-shows-list.page';
+import { MyShowsListPageComponent } from './my-shows-list/my-shows-list-page.component';
 import { ShowListComponent } from './shared/components/show-list/show-list.component';
 import { ShowItemComponent } from './shared/components/show-item/show-item.component';
 import { ShowSeasonDetailPage } from './season-detail/show-season-detail.page';
@@ -16,7 +16,7 @@ import { ShowSearchListPage } from './show-search-list/show-search-list.page';
   declarations: [
     ShowItemComponent,
     ShowListComponent,
-    MyShowsListPage,
+    MyShowsListPageComponent,
     ShowSearchListPage,
     ShowSeasonDetailPage,
     EpisodeDetailPageComponent

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MyShowsListPage } from './my-shows-list/my-shows-list.page';
+import { MyShowsListPageComponent } from './my-shows-list/my-shows-list-page.component';
 import { ShowSeasonDetailPage } from './season-detail/show-season-detail.page';
 import { EpisodeDetailPageComponent } from './episode-detail/episode-detail-page.component';
 import { ShowSearchListPage } from './show-search-list/show-search-list.page';
@@ -8,7 +8,7 @@ import { ShowSearchListPage } from './show-search-list/show-search-list.page';
 const routes: Routes = [
   {
     path: 'my-shows',
-    component: MyShowsListPage
+    component: MyShowsListPageComponent
   },
   {
     path: 'search',
