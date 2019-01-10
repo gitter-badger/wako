@@ -58,7 +58,11 @@ export class HttpService {
             response: response
           };
 
-          ajaxResponse.response = ajaxResponse.responseType === 'json' ? JSON.parse(response.data) : response.data;
+          try {
+            ajaxResponse.response = ajaxResponse.responseType === 'json' ? JSON.parse(response.data) : response.data;
+          } catch (e) {
+            ajaxResponse.response = '';
+          }
 
           return ajaxResponse;
         },
