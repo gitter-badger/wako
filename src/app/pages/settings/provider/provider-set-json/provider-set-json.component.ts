@@ -28,7 +28,7 @@ export class ProviderSetJsonComponent implements OnInit {
   save() {
     try {
       const json = JSON.parse(this.code);
-      console.log('Valid JSON', json);
+
       this.providerService
         .set(json)
         .then(() => {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ILocalNotification, LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { TraktShowsGetWatchedForm } from '../trakt/forms/shows/trakt-shows-get-watched.form';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { forkJoin, from, of, timer } from 'rxjs';
 import { Platform } from '@ionic/angular';
 import { TraktShowsGetNextEpisodeForm } from '../trakt/forms/shows/trakt-shows-get-next-episode.form';
@@ -255,15 +255,6 @@ export class NotificationShowService {
                 })
               );
             }
-          }),
-          tap(() => {
-            if (!this.platform.is('cordova')) {
-              return;
-            }
-
-            this.localNotifications.getAll().then(notifications => {
-              console.log('Total notiifications', notifications.length);
-            });
           })
         );
       })
@@ -283,8 +274,6 @@ export class NotificationShowService {
         this.router.navigateByUrl(data.url);
       }
     });
-
-    console.log('subscribeEvents');
   }
 }
 

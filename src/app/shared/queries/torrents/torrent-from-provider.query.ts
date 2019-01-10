@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { NEVER, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { BaseHttpService } from '../../services/http/base-http.service';
 import { Torrent } from '../../entities/torrent';
@@ -12,6 +12,12 @@ class ProviderHttp extends BaseHttpService {
 
   static getSimultaneousRequest() {
     return 20;
+  }
+
+  static handleError(err: any, url?: string) {
+    console.error('Error provider calling', url, err.status);
+
+    return NEVER;
   }
 }
 
@@ -245,7 +251,7 @@ export class TorrentFromProviderQuery {
                   }
                 });
               } catch (e) {
-                console.log(`Error on provider ${provider.name}`, e, response);
+                console.error(`Error on provider ${provider.name}`, e, response);
               }
             } else if (provider.html_parser) {
               const parser = new DOMParser();
@@ -282,11 +288,11 @@ export class TorrentFromProviderQuery {
 
                     torrents.push(torrent);
                   } catch (e) {
-                    console.log(`Error on getting row ${provider.name}`, e);
+                    console.error(`Error on getting row ${provider.name}`, e);
                   }
                 });
               } catch (e) {
-                console.log(`Error on provider ${provider.name}`, e, response);
+                console.error(`Error on provider ${provider.name}`, e, response);
               }
             }
 

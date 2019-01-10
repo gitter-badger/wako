@@ -50,6 +50,8 @@ export class AppService {
 
   private initializeApp() {
     this.platform.ready().then(() => {
+      this.rewriteConsole();
+
       HttpService.isMobileDevice = this.platform.is('cordova');
 
       HttpService.mobileHttpClient = this.mobileHttpClient;
@@ -199,9 +201,7 @@ export class AppService {
               this.router.events
                 .pipe(filter(event => event instanceof NavigationEnd))
                 .subscribe((event: NavigationEnd) => {
-                  this.firebase.logEvent('Navigate', event.url).then(e => {
-                    console.log('firebase: Navigate', { e });
-                  });
+                  this.firebase.logEvent('Navigate', event.url);
                 });
             });
           }
@@ -221,5 +221,87 @@ export class AppService {
       );
     }
     return of(true);
+  }
+
+  async debugModeEnabled() {
+    const debugMode = await this.storage.get('debugMode');
+
+    return debugMode !== null;
+  }
+
+  async setDebugMode(debugMode: boolean) {
+    if (!debugMode) {
+      return await this.storage.remove('debugMode');
+    }
+    return await this.storage.set('debugMode', true);
+  }
+
+  private async rewriteConsole() {
+    const oldLog = console.log;
+    const oldError = console.error;
+
+    // console.log = (...args) => {
+    //
+    //   this.debugModeEnabled().then(debugMode => {
+    //
+    //     oldLog(...args);
+    //
+    //     if (!debugMode) {
+    //       return;
+    //     }
+    //
+    //     const messages = [];
+    //     args.forEach(arg => {
+    //       let str = arg.toString();
+    //       if (typeof arg === 'object') {
+    //         str = JSON.stringify(arg);
+    //         if (str.length > 300) {
+    //           str = str.substr(0, 300) + '...';
+    //         }
+    //       }
+    //       messages.push(str);
+    //
+    //     });
+    //
+    //     this.toastCtrl.create({
+    //       message: messages.join(' '),
+    //       duration: 3000,
+    //       color: 'primary',
+    //       position: 'top'
+    //     }).then(toast => toast.present());
+    //
+    //   });
+    //
+    // };
+
+    console.error = (...args) => {
+      this.debugModeEnabled().then(debugMode => {
+        oldError(...args);
+
+        if (!debugMode) {
+          return;
+        }
+
+        const messages = [];
+        args.forEach(arg => {
+          let str = arg.toString();
+          if (typeof arg === 'object') {
+            str = JSON.stringify(arg);
+            if (str.length > 300) {
+              str = str.substr(0, 300) + '...';
+            }
+          }
+          messages.push(str);
+        });
+        this.toastCtrl
+          .create({
+            message: messages.join(' '),
+            duration: 4000,
+            color: 'danger',
+            position: 'bottom'
+          })
+          .then(toast => toast.present());
+      });
+    };
   }
 }

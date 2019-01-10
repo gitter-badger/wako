@@ -62,7 +62,7 @@ export class BaseHttpService {
   }
 
   static handleError(err: any, url?: string) {
-    console.log('handleError', err, url);
+    console.error('handleError', err, url);
     // TODO Handle
     return throwError(err);
   }

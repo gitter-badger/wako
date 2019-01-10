@@ -64,8 +64,6 @@ export class ShowItemComponent implements AfterContentInit, OnDestroy {
       this.subscriber.unsubscribe();
     }
 
-    console.log('Load data of', this.show.title);
-
     this.initPoster();
 
     this.setTotalEpisodeToWatch();
