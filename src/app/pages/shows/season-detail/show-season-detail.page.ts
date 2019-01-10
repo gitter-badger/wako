@@ -9,9 +9,10 @@ import { NavController, ToastController } from '@ionic/angular';
 import { Episode } from '../../../shared/entities/episode';
 import { TraktShowsGetProgressWatchedForm } from '../../../shared/services/trakt/forms/shows/trakt-shows-get-progress-watched.form';
 import { SeasonGetByImdbIdQuery } from '../../../shared/queries/show/season/season-get-by-imdb-id.query';
-import { TraktHistoryAddForm } from '../../../shared/services/trakt/forms/history/trakt-history-add.form';
-import { TraktHistoryRemoveForm } from '../../../shared/services/trakt/forms/history/trakt-history-remove.form';
-import { TraktEventService } from '../../../shared/services/trakt/services/trakt-event.service';
+import { EventCategory, EventService, EventShowHistoryChangeData } from '../../../shared/services/event.service';
+import { RemoveToHistoryCommand } from '../../../shared/commands/show/remove-to-history.command';
+import { AddToHistoryCommand } from '../../../shared/commands/show/add-to-history.command';
+import { filter } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'show-season-detail.page.html',
@@ -80,11 +81,13 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
 
     this.initialized = false;
 
-    this.eventSubscriber = TraktEventService.subscribe(this.show.imdbId).subscribe(action => {
-      if (action !== this.traktEventServiceAction) {
-        this.getSeasons();
-      }
-    });
+    this.eventSubscriber = EventService.subscribe<EventShowHistoryChangeData>(EventCategory.showHistory)
+      .pipe(filter(event => event.data.showImdbId === this.show.imdbId))
+      .subscribe(event => {
+        if (event.data.callOrigin !== this.traktEventServiceAction) {
+          this.getSeasons();
+        }
+      });
 
     this.getSeasons();
   }
@@ -166,12 +169,22 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
     let obs = null;
 
     if (episode.watched) {
-      obs = TraktHistoryRemoveForm.submit({ episodeTraktIds: [episode.traktId] });
+      obs = RemoveToHistoryCommand.handle(
+        this.show.imdbId,
+        this.show.title,
+        [episode.traktId],
+        this.traktEventServiceAction
+      );
 
       season.totalEpisodesWatched--;
       episode.watched = false;
     } else {
-      obs = TraktHistoryAddForm.submit({ episodeTraktIds: [episode.traktId] });
+      obs = AddToHistoryCommand.handle(
+        this.show.imdbId,
+        this.show.title,
+        [episode.traktId],
+        this.traktEventServiceAction
+      );
 
       season.totalEpisodesWatched++;
       episode.watched = true;
@@ -183,8 +196,6 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
       if (!done) {
         this.getWatched();
       }
-
-      TraktEventService.emit(this.show.imdbId, this.traktEventServiceAction);
     });
   }
 
@@ -203,7 +214,7 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
 
       season.totalEpisodesWatched = 0;
 
-      obs = TraktHistoryRemoveForm.submit({ episodeTraktIds: traktIds });
+      obs = RemoveToHistoryCommand.handle(this.show.imdbId, this.show.title, traktIds, this.traktEventServiceAction);
     } else {
       const traktIds = [];
 
@@ -215,7 +226,7 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
       });
       season.totalEpisodesWatched = season.episodeCount;
 
-      obs = TraktHistoryAddForm.submit({ episodeTraktIds: traktIds });
+      obs = AddToHistoryCommand.handle(this.show.imdbId, this.show.title, traktIds, this.traktEventServiceAction);
     }
 
     this.setTotalEpisodesWatched();
@@ -224,8 +235,6 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
       if (!done) {
         this.getWatched();
       }
-
-      TraktEventService.emit(this.show.imdbId, this.traktEventServiceAction);
     });
   }
 
@@ -241,13 +250,13 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
       season.totalEpisodesWatched = 0;
     });
 
-    TraktHistoryRemoveForm.submit({ episodeTraktIds: traktIds }).subscribe(done => {
-      if (!done) {
-        this.getWatched();
+    RemoveToHistoryCommand.handle(this.show.imdbId, this.show.title, traktIds, this.traktEventServiceAction).subscribe(
+      done => {
+        if (!done) {
+          this.getWatched();
+        }
       }
-
-      TraktEventService.emit(this.show.imdbId, this.traktEventServiceAction);
-    });
+    );
 
     this.doIWatchThisShow = false;
 

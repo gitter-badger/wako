@@ -17,6 +17,8 @@ import { AppVersion } from '@ionic-native/app-version/ngx';
 import { NavigationEnd, Router } from '@angular/router';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import { TraktUsersMeForm } from '../trakt/forms/users/trakt-users-me.form';
+import { EventCategory, EventService, EventShowHistoryChangeData } from '../event.service';
+import { NotificationShowService } from './notification-show.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +30,8 @@ export class AppService {
 
   appVersion$ = new BehaviorSubject('');
 
+  notificationInitialized = false;
+
   constructor(
     private iab: InAppBrowser,
     private storage: Storage,
@@ -38,7 +42,8 @@ export class AppService {
     private toastCtrl: ToastController,
     private appVersion: AppVersion,
     private router: Router,
-    private firebase: Firebase
+    private firebase: Firebase,
+    private notificationShowService: NotificationShowService
   ) {
     this.initializeApp();
   }
@@ -68,6 +73,42 @@ export class AppService {
       setTimeout(() => {
         CacheService.prune();
       }, 20000);
+
+      this.isAuthenticated$.subscribe(isAuth => {
+        if (isAuth) {
+          this.notificationShowService.hasPermission().then(granted => {
+            console.log('hasPermission', granted);
+            if (granted) {
+              this.initNotifications();
+            }
+          });
+        }
+      });
+    });
+  }
+
+  private initNotifications() {
+    if (this.notificationInitialized) {
+      return;
+    }
+    this.notificationInitialized = true;
+
+    console.log('initNotifications');
+
+    this.notificationShowService.subscribeEvents();
+
+    EventService.subscribe<EventShowHistoryChangeData>(EventCategory.showHistory).subscribe(event => {
+      this.notificationShowService.setByShow(event.data.showImdbId).subscribe();
+    });
+
+    CacheService.get('notificationShowService.checkAllShows').subscribe(hasChecked => {
+      if (!hasChecked) {
+        this.notificationShowService.checkAllShows().subscribe(() => {
+          CacheService.set('notificationShowService.checkAllShows', true, '1d');
+        });
+      } else {
+        console.log('Check notification tomorrow');
+      }
     });
   }
 

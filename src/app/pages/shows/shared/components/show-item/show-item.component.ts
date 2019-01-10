@@ -5,7 +5,8 @@ import { DomTool } from '../../../../../shared/tools/dom.tool';
 import { Show } from '../../../../../shared/entities/show';
 import { TmdbShowGetImagesQuery } from '../../../../../shared/queries/tmdb/show/tmdb-show-get-images.query';
 import { TraktShowsGetProgressWatchedForm } from '../../../../../shared/services/trakt/forms/shows/trakt-shows-get-progress-watched.form';
-import { TraktEventService } from '../../../../../shared/services/trakt/services/trakt-event.service';
+import { EventCategory, EventService, EventShowHistoryChangeData } from '../../../../../shared/services/event.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'wk-show-item',
@@ -51,7 +52,11 @@ export class ShowItemComponent implements AfterContentInit, OnDestroy {
       }
     }, 200);
 
-    this.eventSubscriber = TraktEventService.subscribe(this.show.imdbId).subscribe(() => this._loadData());
+    this.eventSubscriber = EventService.subscribe<EventShowHistoryChangeData>(EventCategory.showHistory)
+      .pipe(filter(event => event.data.showImdbId === this.show.imdbId))
+      .subscribe(() => {
+        this._loadData();
+      });
   }
 
   private _loadData() {

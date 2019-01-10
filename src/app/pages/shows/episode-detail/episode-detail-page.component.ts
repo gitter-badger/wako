@@ -5,12 +5,12 @@ import { Show } from '../../../shared/entities/show';
 import { ShowGetByImdbIdQuery } from '../../../shared/queries/show/show-get-by-imdb-id.query';
 import { SeasonGetByImdbIdQuery } from '../../../shared/queries/show/season/season-get-by-imdb-id.query';
 import { Season } from '../../../shared/entities/season';
-import { TraktHistoryRemoveForm } from '../../../shared/services/trakt/forms/history/trakt-history-remove.form';
-import { TraktHistoryAddForm } from '../../../shared/services/trakt/forms/history/trakt-history-add.form';
 import { TraktShowsGetProgressWatchedForm } from '../../../shared/services/trakt/forms/shows/trakt-shows-get-progress-watched.form';
-import { TraktEventService } from '../../../shared/services/trakt/services/trakt-event.service';
 import { Torrent } from '../../../shared/entities/torrent';
 import { ElementumQueryParam } from '../../../shared/entities/elementum-query-param';
+import { RemoveToHistoryCommand } from '../../../shared/commands/show/remove-to-history.command';
+import { AddToHistoryCommand } from '../../../shared/commands/show/add-to-history.command';
+import { ErrorToastService } from '../../../shared/services/app/error-toast.service';
 
 @Component({
   templateUrl: 'episode-detail-page.component.html',
@@ -29,7 +29,7 @@ export class EpisodeDetailPageComponent implements OnInit {
     category: 'episode'
   };
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private errorToastService: ErrorToastService) {}
 
   ngOnInit() {
     this.route.paramMap.subscribe(data => {
@@ -50,7 +50,7 @@ export class EpisodeDetailPageComponent implements OnInit {
 
                   watchedProgressSeason.episodes.forEach(watchedProgress => {
                     season.episodes.forEach(_episode => {
-                      if (watchedProgress.number === _episode.traktNumber) {
+                      if (_episode.traktId === episode.traktId && watchedProgress.number === _episode.traktNumber) {
                         episode.watched = watchedProgress.completed;
                       }
                     });
@@ -63,7 +63,7 @@ export class EpisodeDetailPageComponent implements OnInit {
           });
         },
         err => {
-          console.error(err);
+          this.errorToastService.create(`Failed to load show ${showImdbId}. Err: ${err.toString()}`);
         }
       );
     });
@@ -81,15 +81,11 @@ export class EpisodeDetailPageComponent implements OnInit {
 
   toggleWatched() {
     if (this.episode.watched) {
-      TraktHistoryRemoveForm.submit({ episodeTraktIds: [this.episode.traktId] }).subscribe(() => {
-        TraktEventService.emit(this.show.imdbId);
-      });
+      RemoveToHistoryCommand.handle(this.show.imdbId, this.show.title, [this.episode.traktId]).subscribe();
 
       this.episode.watched = false;
     } else {
-      TraktHistoryAddForm.submit({ episodeTraktIds: [this.episode.traktId] }).subscribe(() => {
-        TraktEventService.emit(this.show.imdbId);
-      });
+      AddToHistoryCommand.handle(this.show.imdbId, this.show.title, [this.episode.traktId]).subscribe();
 
       this.episode.watched = true;
     }

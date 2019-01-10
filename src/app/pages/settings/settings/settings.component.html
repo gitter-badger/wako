@@ -5,19 +5,35 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-card>
-    <ion-card-header> Settings </ion-card-header>
+<ion-content>
+  <ion-card *ngIf="showsNotificationSettings">
+    <ion-card-header> <ion-card-title>Notifications</ion-card-title> </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
         <ion-item color="darkLight">
-          <ion-label> TV Shows notification </ion-label>
-          <ion-toggle [checked]="true"></ion-toggle>
+          <ion-label text-wrap>Enable TV Shows notifications</ion-label>
+          <ion-toggle
+            [(ngModel)]="showsNotificationSettings.enabled"
+            (ngModelChange)="showsNotificationChanged()"
+          ></ion-toggle>
+        </ion-item>
+        <ion-item color="darkLight" *ngIf="showsNotificationSettings.enabled">
+          <ion-label text-wrap>Get only notified if I've watched all aired episodes</ion-label>
+          <ion-toggle
+            [(ngModel)]="showsNotificationSettings.enableOnlyIfUptToDate"
+            (ngModelChange)="showsNotificationChanged()"
+          ></ion-toggle>
         </ion-item>
       </ion-list>
+    </ion-card-content>
+  </ion-card>
 
-      <ion-button color="secondary" (click)="logout()">Logout</ion-button>
-      <ion-button (click)="clearCache()">Clear APP Cache</ion-button>
+  <ion-card>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item color="darkLight"> <ion-button (click)="clearCache()">Clear APP Cache</ion-button> </ion-item>
+        <ion-item color="darkLight"> <ion-button color="secondary" (click)="logout()">Logout</ion-button> </ion-item>
+      </ion-list>
     </ion-card-content>
   </ion-card>
 </ion-content>

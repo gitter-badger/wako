@@ -10,7 +10,7 @@ export class TraktEpisodeToEpisodeQuery {
     return value;
   }
 
-  private static getEpisodeCode(seasonNumber: number, episodeNumber) {
+  static getEpisodeCode(seasonNumber: number, episodeNumber) {
     return 'S' + this.add0(seasonNumber).toString() + 'E' + this.add0(episodeNumber).toString();
   }
 

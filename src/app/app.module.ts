@@ -16,6 +16,7 @@ import { SearchTorrentComponent } from './pages/torrents/search-torrent/search-t
 import { AppVersion } from '@ionic-native/app-version/ngx';
 import { Firebase } from '@ionic-native/firebase/ngx';
 import { HomeComponent } from './pages/home/home.component';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, SearchTorrentComponent, HomeComponent],
@@ -32,7 +33,7 @@ import { HomeComponent } from './pages/home/home.component';
     }),
     SharedModule
   ],
-  providers: [SplashScreen, InAppBrowser, HTTP, Keyboard, AppVersion, Firebase],
+  providers: [SplashScreen, InAppBrowser, HTTP, Keyboard, AppVersion, Firebase, LocalNotifications],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
