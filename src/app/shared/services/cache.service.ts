@@ -5,8 +5,6 @@ import { from } from 'rxjs';
 export class CacheService {
   public static storageEngine = new Storage({
     name: 'wako_cache'
-    // size: 4980736,
-    // driverOrder: ['websql']
   });
 
   private static serialize(data: any, expiresAt: number) {
