@@ -151,7 +151,7 @@ export class MovieSearchListComponent implements OnInit {
       () => {
         this.searching = false;
 
-        this.errorToastService.create('Failed to load my shows');
+        this.errorToastService.create('Failed to load more movies');
       }
     );
 
