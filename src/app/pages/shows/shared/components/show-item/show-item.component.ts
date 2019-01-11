@@ -81,6 +81,11 @@ export class ShowItemComponent implements AfterContentInit, OnDestroy {
 
   private setTotalEpisodeToWatch() {
     TraktShowsGetProgressWatchedForm.submit(this.show.imdbId).subscribe(traktShowProgressWatchedDto => {
+      // Issue. airedEpisodes from TraktShowsGetWatchedForm could be different than this one, in that case trust this one
+      if (this.show.airedEpisodes < traktShowProgressWatchedDto.aired) {
+        this.show.airedEpisodes = traktShowProgressWatchedDto.aired;
+      }
+
       this.show.totalEpisodesWatched = traktShowProgressWatchedDto.completed;
     });
   }
