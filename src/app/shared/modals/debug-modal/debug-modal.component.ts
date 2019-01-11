@@ -10,10 +10,10 @@ import { ModalController } from '@ionic/angular';
 export class DebugModalComponent implements OnInit {
   list: DebugItem[] = [];
 
-  private logLevel = 'error';
+  logLevel = 'error';
 
   constructor(public appService: AppService, private modalCtrl: ModalController) {
-    this.setlogLevel(this.logLevel);
+    this.setLogLevel(this.logLevel);
   }
 
   ngOnInit() {}
@@ -32,7 +32,7 @@ export class DebugModalComponent implements OnInit {
     }
   }
 
-  setlogLevel(logLevel: string) {
+  setLogLevel(logLevel: string) {
     this.logLevel = logLevel;
     if (this.logLevel === 'error') {
       this.list = this.appService.errorsList;
