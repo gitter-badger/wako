@@ -114,7 +114,7 @@ export class NotificationShowService {
     );
   }
 
-  private get(showImdbId: string): Promise<ILocalNotification> {
+  get(showImdbId: string): Promise<ILocalNotification> {
     if (!this.platform.is('cordova')) {
       return Promise.resolve(null);
     }
