@@ -38,7 +38,7 @@
           <ion-col offset="4">
             <div class="details">
               <ion-text color="medium">
-                {{ show.certification ? show.certification : 'N/A' }} | {{ show.firstAired | date: 'y-MM-dd' }} |
+                {{ show.certification ? show.certification : 'N/A' }} | {{ episode.firstAired | date: 'y-MM-dd' }} |
                 {{ episode.runtime * 60 | wmFormatTime: '%hh %Mmin' }} <br />
                 {{ show.genres.join(', ') }}
               </ion-text>
