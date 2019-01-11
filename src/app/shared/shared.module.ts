@@ -13,6 +13,7 @@ import { TorrentListComponent } from './components/torrent-list/torrent-list.com
 import { KodiRemoteToolbarComponent } from './components/kodi-remote-toolbar/kodi-remote-toolbar.component';
 import { MovieFilterModal } from './modals/movie-filter/movie-filter.modal';
 import { HasTorrentsComponent } from './components/has-torrents/has-torrents.component';
+import { DebugModalComponent } from './modals/debug-modal/debug-modal.component';
 
 const pipes = [FileSizePipe, TorrentSortPipe, FormatTimePipe];
 
@@ -22,10 +23,11 @@ const components = [
   KodiRemoteModal,
   KodiRemoteToolbarComponent,
   MovieFilterModal,
-  HasTorrentsComponent
+  HasTorrentsComponent,
+  DebugModalComponent
 ];
 
-const entryComponents = [KodiRemoteModal, MovieFilterModal];
+const entryComponents = [KodiRemoteModal, MovieFilterModal, DebugModalComponent];
 
 const directives = [ScrollWatcherDirective];
 

@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Debug</ion-title>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="dismiss()"> <ion-icon name="close"></ion-icon> </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="light" (click)="emptyList()"> <ion-icon name="trash"></ion-icon> </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item color="darkLight">
+      <ion-label>Log level</ion-label>
+      <ion-select [(ngModel)]="logLevel" (ngModelChange)="setlogLevel($event)">
+        <ion-select-option value="all">All</ion-select-option>
+        <ion-select-option value="error">Error</ion-select-option>
+        <ion-select-option value="info">Info</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngFor="let debugItem of list">
+      <ion-label text-wrap>{{ debugItem.message }} </ion-label>
+      <p slot="end">
+        <ion-badge slot="end" color="light">{{ debugItem.date | date: 'HH:mm:ss' }}</ion-badge>
+        <br />
+        <ion-badge slot="end" [color]="debugItem.type === 'error' ? 'danger' : 'primary'">{{
+          debugItem.type
+        }}</ion-badge>
+      </p>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>

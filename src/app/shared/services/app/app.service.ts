@@ -30,7 +30,12 @@ export class AppService {
 
   appVersion$ = new BehaviorSubject('');
 
+  debugMode$ = new BehaviorSubject(false);
+
   notificationInitialized = false;
+
+  errorsList: DebugItem[] = [];
+  infoList: DebugItem[] = [];
 
   constructor(
     private iab: InAppBrowser,
@@ -51,6 +56,12 @@ export class AppService {
   private initializeApp() {
     this.platform.ready().then(() => {
       this.rewriteConsole();
+
+      this.debugModeEnabled().then(debugMode => {
+        if (debugMode) {
+          this.debugMode$.next(true);
+        }
+      });
 
       HttpService.isMobileDevice = this.platform.is('cordova');
 
@@ -230,6 +241,8 @@ export class AppService {
   }
 
   async setDebugMode(debugMode: boolean) {
+    this.debugMode$.next(debugMode);
+
     if (!debugMode) {
       return await this.storage.remove('debugMode');
     }
@@ -240,39 +253,30 @@ export class AppService {
     const oldLog = console.log;
     const oldError = console.error;
 
-    // console.log = (...args) => {
-    //
-    //   this.debugModeEnabled().then(debugMode => {
-    //
-    //     oldLog(...args);
-    //
-    //     if (!debugMode) {
-    //       return;
-    //     }
-    //
-    //     const messages = [];
-    //     args.forEach(arg => {
-    //       let str = arg.toString();
-    //       if (typeof arg === 'object') {
-    //         str = JSON.stringify(arg);
-    //         if (str.length > 300) {
-    //           str = str.substr(0, 300) + '...';
-    //         }
-    //       }
-    //       messages.push(str);
-    //
-    //     });
-    //
-    //     this.toastCtrl.create({
-    //       message: messages.join(' '),
-    //       duration: 3000,
-    //       color: 'primary',
-    //       position: 'top'
-    //     }).then(toast => toast.present());
-    //
-    //   });
-    //
-    // };
+    console.log = (...args) => {
+      this.debugModeEnabled().then(debugMode => {
+        oldLog(...args);
+
+        if (!debugMode) {
+          return;
+        }
+
+        const messages = [];
+
+        args.forEach(arg => {
+          let str = arg.toString();
+          if (typeof arg === 'object') {
+            str = JSON.stringify(arg);
+          }
+          messages.push(str);
+        });
+        this.infoList.push({
+          date: new Date(),
+          type: 'log',
+          message: messages.join(' ')
+        });
+      });
+    };
 
     console.error = (...args) => {
       this.debugModeEnabled().then(debugMode => {
@@ -283,25 +287,26 @@ export class AppService {
         }
 
         const messages = [];
+
         args.forEach(arg => {
           let str = arg.toString();
           if (typeof arg === 'object') {
             str = JSON.stringify(arg);
-            if (str.length > 300) {
-              str = str.substr(0, 300) + '...';
-            }
           }
           messages.push(str);
         });
-        this.toastCtrl
-          .create({
-            message: messages.join(' '),
-            duration: 4000,
-            color: 'danger',
-            position: 'bottom'
-          })
-          .then(toast => toast.present());
+        this.errorsList.push({
+          date: new Date(),
+          type: 'error',
+          message: messages.join(' ')
+        });
       });
     };
   }
+}
+
+export interface DebugItem {
+  date: Date;
+  type: 'error' | 'log';
+  message: string;
 }
