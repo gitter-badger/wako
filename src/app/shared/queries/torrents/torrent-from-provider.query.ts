@@ -1,5 +1,5 @@
-import { NEVER, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { BaseHttpService } from '../../services/http/base-http.service';
 import { Torrent } from '../../entities/torrent';
 import { TorrentQualityTitleQuery } from './torrent-quality-title.query';
@@ -12,12 +12,6 @@ class ProviderHttp extends BaseHttpService {
 
   static getSimultaneousRequest() {
     return 20;
-  }
-
-  static handleError(err: any, url?: string) {
-    console.error('Error provider calling', url, err.status);
-
-    return NEVER;
   }
 }
 
@@ -41,6 +35,19 @@ export class TorrentFromProviderQuery {
     });
 
     return results;
+  }
+
+  private static evalCode(element: HTMLElement | Document, url: string, provider: Provider, field: string) {
+    const code = provider.html_parser[field];
+    try {
+      return Function('doc', 'row', 'code', `return eval(code)`)(element, element, provider.html_parser[field]);
+    } catch (e) {
+      console.error(
+        `Failed to execute ${field} code: ${code} for provider ${provider.name}. Url: ${url}`,
+        e.toString()
+      );
+      return null;
+    }
   }
 
   public static getProviderReplacement(provider: Provider, filter: TorrentsQueryFilter) {
@@ -175,8 +182,20 @@ export class TorrentFromProviderQuery {
           provider.time_to_wait_on_too_many_request_ms,
           provider.time_to_wait_between_each_request_ms
         ).pipe(
+          catchError(err => {
+            if (err.status && err.status !== 404) {
+              console.error(`Error ${err.status} on ${provider.name} (${providerUrl}}`, err);
+              return throwError(err);
+            }
+
+            return of(null);
+          }),
           map(response => {
             const torrents: Torrent[] = [];
+
+            if (!response) {
+              return torrents;
+            }
 
             if (provider.json_format) {
               try {
@@ -257,42 +276,34 @@ export class TorrentFromProviderQuery {
               const parser = new DOMParser();
               const doc = parser.parseFromString(response, 'text/html');
 
-              try {
-                const rows = Function('doc', 'code', `return eval(code)`)(doc, provider.html_parser.row) as NodeListOf<
-                  HTMLTableRowElement
-                >;
+              const rows = this.evalCode(doc, providerUrl, provider, 'row') as NodeListOf<HTMLTableRowElement>;
 
+              if (rows) {
                 rows.forEach(row => {
-                  try {
-                    const title = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.title);
+                  const title = this.evalCode(row, providerUrl, provider, 'title');
 
-                    const torrentUrl = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.url);
+                  const torrentUrl = this.evalCode(row, providerUrl, provider, 'url');
 
-                    const torrent = <Torrent>{
-                      providerName: provider.name,
-                      title: title,
-                      url: torrentUrl,
-                      seeds: +Function('row', 'code', `return eval(code)`)(row, provider.html_parser.seeds),
-                      peers: +Function('row', 'code', `return eval(code)`)(row, provider.html_parser.peers),
-                      quality: TorrentQualityTitleQuery.getData(title),
-                      isAccurate: isAccurate
-                    };
+                  const torrent = <Torrent>{
+                    providerName: provider.name,
+                    title: title,
+                    url: torrentUrl,
+                    seeds: +this.evalCode(row, providerUrl, provider, 'seeds'),
+                    peers: +this.evalCode(row, providerUrl, provider, 'peers'),
+                    quality: TorrentQualityTitleQuery.getData(title),
+                    isAccurate: isAccurate
+                  };
 
-                    const size = Function('row', 'code', `return eval(code)`)(row, provider.html_parser.size);
+                  const size = this.evalCode(row, providerUrl, provider, 'size');
 
-                    if (Number(size)) {
-                      torrent.size_bytes = +size;
-                    } else {
-                      torrent.size_str = size;
-                    }
-
-                    torrents.push(torrent);
-                  } catch (e) {
-                    console.error(`Error on getting row ${provider.name}`, e);
+                  if (Number(size)) {
+                    torrent.size_bytes = +size;
+                  } else {
+                    torrent.size_str = size;
                   }
+
+                  torrents.push(torrent);
                 });
-              } catch (e) {
-                console.error(`Error on provider ${provider.name}`, e, response);
               }
             }
 
