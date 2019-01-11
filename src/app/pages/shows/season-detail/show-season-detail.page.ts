@@ -13,6 +13,7 @@ import { EventCategory, EventService, EventShowHistoryChangeData } from '../../.
 import { RemoveToHistoryCommand } from '../../../shared/commands/show/remove-to-history.command';
 import { AddToHistoryCommand } from '../../../shared/commands/show/add-to-history.command';
 import { filter } from 'rxjs/operators';
+import { NotificationShowService } from '../../../shared/services/app/notification-show.service';
 
 @Component({
   templateUrl: 'show-season-detail.page.html',
@@ -43,7 +44,8 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private toastCtrl: ToastController,
-    private browserService: BrowserService
+    private browserService: BrowserService,
+    private notificationShowService: NotificationShowService
   ) {}
 
   ngOnDestroy() {
@@ -78,6 +80,14 @@ export class ShowSeasonDetailPage implements OnInit, OnDestroy {
 
   init(show: Show) {
     this.show = show;
+
+    this.notificationShowService.get(this.show.imdbId).then(notification => {
+      if (!notification) {
+        console.log(`No notification scheduled for ${this.show.title}`);
+      } else {
+        console.log(`Next notification for ${this.show.title} will be at ${notification.trigger.at}`);
+      }
+    });
 
     this.initialized = false;
 
