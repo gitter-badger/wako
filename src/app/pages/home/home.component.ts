@@ -5,6 +5,7 @@ import { TraktUsersStatsForm } from '../../shared/services/trakt/forms/users/tra
 import { ShowUpNextToWatchQuery } from '../../shared/queries/show/show-up-next-to-watch.query';
 import { NextEpisodeToWatch } from '../../shared/entities/next-episode-to-watch';
 import { finalize } from 'rxjs/operators';
+import { EventCategory, EventService } from '../../shared/services/event.service';
 
 @Component({
   selector: 'wk-home',
@@ -19,9 +20,15 @@ export class HomeComponent implements OnInit {
 
   upNextToWatchLoading = true;
 
-  constructor() {}
-
   ngOnInit() {
+    EventService.subscribe(EventCategory.showHistory).subscribe(() => {
+      this.init();
+    });
+
+    this.init();
+  }
+
+  private init() {
     TraktUsersMeForm.submit().subscribe(user => (this.username = user.username));
     TraktUsersStatsForm.submit().subscribe(stats => (this.stats = stats));
 
