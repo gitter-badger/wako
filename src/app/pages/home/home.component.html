@@ -17,6 +17,27 @@
       <p>Total episodes watched: {{ stats?.episodes.watched }}</p>
     </ion-card-content>
   </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        Up Next To Watch
+        <ion-spinner name="dots" *ngIf="upNextToWatchLoading"></ion-spinner>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content no-padding>
+      <p *ngIf="!upNextToWatchLoading && upNextToWatch.length === 0">Nothing to watch</p>
+      <ion-list *ngIf="!upNextToWatchLoading && upNextToWatch.length > 0">
+        <ion-item color="darkLight" *ngFor="let episode of upNextToWatch" [routerLink]="episode.url">
+          <ion-avatar slot="start"> <img [src]="episode.showPoster" /> </ion-avatar>
+          <ion-label>
+            {{ episode.showTitle }} {{ episode.code }} <br />
+            <ion-note>{{ episode.title }}</ion-note>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
 
 <wk-kodi-remote-toolbar></wk-kodi-remote-toolbar>
