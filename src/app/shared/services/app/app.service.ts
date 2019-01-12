@@ -209,14 +209,33 @@ export class AppService {
           if (user && this.platform.is('cordova')) {
             this.firebase.setUserId(user.ids.slug).then(() => {
               console.log('firebase: setUserId done');
-              this.router.events
-                .pipe(filter(event => event instanceof NavigationEnd))
-                .subscribe((event: NavigationEnd) => {
-                  this.firebase.logEvent('Navigate', event.url);
-                });
             });
           }
         });
+      }
+    });
+
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+      if (event.url.length > 0) {
+        let screenName = 'HOME';
+
+        if (event.url !== '/') {
+          const urlParts = event.url.split('/');
+
+          if (urlParts[1]) {
+            screenName = urlParts[1].toUpperCase();
+
+            if (urlParts[2]) {
+              screenName += '_' + urlParts[2].toUpperCase();
+            }
+          }
+        }
+        console.log(`Screen name: ${screenName}`);
+
+        if (this.platform.is('cordova')) {
+          this.firebase.setScreenName(screenName);
+          this.firebase.logEvent('Navigate', event.url);
+        }
       }
     });
   }
