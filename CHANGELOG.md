@@ -1,7 +1,8 @@
 # 1.4 (2019-01-12)
 
 - Added "Up next to watch"
-- fixes #7
+- Fixes #7
+- New debug modal
 
 # 1.3 (2019-01-10)
 
