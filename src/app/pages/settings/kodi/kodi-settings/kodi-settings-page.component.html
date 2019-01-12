@@ -1,6 +1,8 @@
 <ion-header class="search-list">
   <ion-toolbar>
-    <ion-buttons slot="start"> <ion-back-button color="light"></ion-back-button> </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="modalCtrl.dismiss()"> <ion-icon name="close"></ion-icon> </ion-button>
+    </ion-buttons>
     <ion-title>Kodi - Configuration</ion-title>
   </ion-toolbar>
 </ion-header>

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, of, Subject, Subscription } from 'rxjs';
 import { KodiService } from '../../../../shared/services/app/kodi.service';
 import { KodiHostStructure } from '../../../../shared/services/kodi/structures/kodi-host.structure';
 import { KodiHttpService } from '../../../../shared/services/kodi/services/kodi-http.service';
 import { KodiPingForm } from '../../../../shared/services/kodi/forms/ping/kodi-ping.form';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   templateUrl: 'kodi-settings-page.component.html'
@@ -19,37 +20,12 @@ export class KodiSettingsPageComponent implements OnInit {
   private isConfigOkSubscription: Subscription;
   private checkSettingsSubject = new Subject<KodiHostStructure>();
 
-  private currentHost: KodiHostStructure;
+  currentHost: KodiHostStructure;
 
-  constructor(
-    private kodiService: KodiService,
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private kodiService: KodiService, private formBuilder: FormBuilder, public modalCtrl: ModalController) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(data => {
-      let conf = null;
-
-      if (data.get('host')) {
-        const [host, port] = data.get('host').split(':');
-
-        this.kodiService.getHosts().then(hosts => {
-          hosts.forEach(config => {
-            if (config.host === host && +config.port === +port) {
-              conf = config;
-            }
-          });
-
-          this.currentHost = conf;
-
-          this.init(conf);
-        });
-      } else {
-        this.init(conf);
-      }
-    });
+    this.init(this.currentHost);
   }
 
   private init(host: KodiHostStructure) {
@@ -101,7 +77,7 @@ export class KodiSettingsPageComponent implements OnInit {
   }
 
   private addHostAndNavBack() {
-    this.kodiService.addHost(this.form.value).then(() => this.router.navigate(['../../'], { relativeTo: this.route }));
+    this.kodiService.addHost(this.form.value).then(() => this.modalCtrl.dismiss());
   }
 
   processForm() {

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ProviderListComponent } from './provider-list/provider-list.component';
-import { ProviderSetJsonComponent } from './provider-set-json/provider-set-json.component';
 
 const routes: Routes = [
   {
@@ -11,10 +10,6 @@ const routes: Routes = [
   {
     path: 'list',
     component: ProviderListComponent
-  },
-  {
-    path: 'set-json',
-    component: ProviderSetJsonComponent
   }
 ];
 

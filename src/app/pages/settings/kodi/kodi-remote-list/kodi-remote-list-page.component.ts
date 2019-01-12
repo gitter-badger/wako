@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
 import { KodiService } from '../../../../shared/services/app/kodi.service';
 import { KodiHostStructure } from '../../../../shared/services/kodi/structures/kodi-host.structure';
+import { ModalController } from '@ionic/angular';
+import { KodiSettingsPageComponent } from '../kodi-settings/kodi-settings-page.component';
 
 @Component({
   templateUrl: 'kodi-remote-list-page.component.html'
@@ -11,19 +11,9 @@ export class KodiRemoteListPageComponent implements OnInit {
   hosts: KodiHostStructure[] = [];
   currentHostId: string;
 
-  constructor(private kodiService: KodiService, private router: Router) {}
+  constructor(private kodiService: KodiService, private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    this.router.events
-      .pipe(
-        filter(event => {
-          return event instanceof NavigationEnd;
-        })
-      )
-      .subscribe(() => {
-        this.getList();
-      });
-
     this.getList();
   }
 
@@ -62,11 +52,32 @@ export class KodiRemoteListPageComponent implements OnInit {
   }
 
   add() {
-    this.router.navigateByUrl('/settings/kodi/host/');
+    this.modalCtrl
+      .create({
+        component: KodiSettingsPageComponent
+      })
+      .then(modal => {
+        modal.present();
+        modal.onDidDismiss().then(() => {
+          this.getList();
+        });
+      });
   }
 
   setHost(host: KodiHostStructure) {
-    this.router.navigateByUrl(`/settings/kodi/host/${host.host}:${host.port}`);
+    this.modalCtrl
+      .create({
+        component: KodiSettingsPageComponent,
+        componentProps: {
+          currentHost: host
+        }
+      })
+      .then(modal => {
+        modal.present();
+        modal.onDidDismiss().then(() => {
+          this.getList();
+        });
+      });
   }
 
   delete(host: KodiHostStructure) {

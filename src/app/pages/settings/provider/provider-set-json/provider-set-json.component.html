@@ -1,9 +1,11 @@
 <ion-header class="search-list">
   <ion-toolbar>
-    <ion-buttons slot="start"> <ion-menu-button color="light"></ion-menu-button> </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-button color="light" (click)="modalCtrl.dismiss()"> <ion-icon name="close"></ion-icon> </ion-button>
+    </ion-buttons>
     <ion-title>Set Providers</ion-title>
     <ion-buttons slot="end"> <ion-button (click)="save()">Save</ion-button> </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content> <textarea [(ngModel)]="code"></textarea> </ion-content>
+<ion-content><textarea [(ngModel)]="code"></textarea></ion-content>

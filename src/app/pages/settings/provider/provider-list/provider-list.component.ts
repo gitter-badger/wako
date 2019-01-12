@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { filter } from 'rxjs/operators';
-import { NavigationEnd, Router } from '@angular/router';
 import { ProviderService } from '../../../../shared/services/app/provider.service';
 import { Provider } from '../../../../shared/entities/provider';
+import { ModalController } from '@ionic/angular';
+import { ProviderSetJsonComponent } from '../provider-set-json/provider-set-json.component';
 
 @Component({
   selector: 'wk-provider-list',
@@ -11,19 +11,9 @@ import { Provider } from '../../../../shared/entities/provider';
 export class ProviderListComponent implements OnInit {
   providersMap = new Map<string, Provider>();
 
-  constructor(private providerService: ProviderService, private router: Router) {}
+  constructor(private providerService: ProviderService, private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    this.router.events
-      .pipe(
-        filter(event => {
-          return event instanceof NavigationEnd;
-        })
-      )
-      .subscribe(() => {
-        this.getList();
-      });
-
     this.getList();
   }
 
@@ -41,7 +31,16 @@ export class ProviderListComponent implements OnInit {
   }
 
   add() {
-    this.router.navigateByUrl('/settings/providers/set-json');
+    this.modalCtrl
+      .create({
+        component: ProviderSetJsonComponent
+      })
+      .then(modal => {
+        modal.present();
+        modal.onDidDismiss().then(() => {
+          this.getList();
+        });
+      });
   }
 
   delete(key: string) {

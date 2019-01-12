@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProviderService } from '../../../../shared/services/app/provider.service';
 import { Router } from '@angular/router';
 import { Provider } from '../../../../shared/entities/provider';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'wk-provider-set-json',
@@ -11,7 +12,7 @@ import { Provider } from '../../../../shared/entities/provider';
 export class ProviderSetJsonComponent implements OnInit {
   code = '';
 
-  constructor(private providerService: ProviderService, private router: Router) {}
+  constructor(private providerService: ProviderService, public modalCtrl: ModalController) {}
 
   ngOnInit() {
     this.providerService.getMap().then(providers => {
@@ -32,7 +33,7 @@ export class ProviderSetJsonComponent implements OnInit {
       this.providerService
         .set(json)
         .then(() => {
-          this.router.navigateByUrl('/settings/providers');
+          this.modalCtrl.dismiss();
         })
         .catch(err => {
           alert(err.message);

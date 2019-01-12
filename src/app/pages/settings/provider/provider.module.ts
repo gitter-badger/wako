@@ -9,6 +9,7 @@ import { ProviderSetJsonComponent } from './provider-set-json/provider-set-json.
 
 @NgModule({
   declarations: [ProviderListComponent, ProviderSetJsonComponent],
+  entryComponents: [ProviderSetJsonComponent],
   imports: [CommonModule, FormsModule, IonicModule, ProviderRoutingModule, SharedModule]
 })
 export class ProviderModule {}

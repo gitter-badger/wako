@@ -9,6 +9,7 @@ import { SharedModule } from '../../../shared/shared.module';
 
 @NgModule({
   imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, KodiRoutingModule, SharedModule],
+  entryComponents: [KodiSettingsPageComponent],
   declarations: [KodiSettingsPageComponent, KodiRemoteListPageComponent]
 })
 export class KodiModule {}
