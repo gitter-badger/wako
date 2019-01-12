@@ -8,6 +8,7 @@ export interface TraktShowWatchedDto {
     };
     title: string;
     year: number;
+    status: 'ended' | 'canceled' | 'returning series';
   };
   seasons: {
     episodes: {
