@@ -88,6 +88,11 @@ export class NotificationShowService {
         const obss = [];
         let i = 1;
         shows.forEach(show => {
+          if (show.show.status !== 'returning series') {
+            console.log(`${show.show.title} is ${show.show.status} then don't set any notification`);
+            return;
+          }
+
           const showImdbId = show.show.ids.imdb;
 
           obss.push(
