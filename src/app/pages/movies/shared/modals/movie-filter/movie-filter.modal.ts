@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { TraktMoviesFilterStructure } from '../../services/trakt/sturctures/movies/trakt-movies-filter.structure';
+import { TraktMoviesFilterStructure } from '../../../../../shared/services/trakt/sturctures/movies/trakt-movies-filter.structure';
 
 @Component({
   templateUrl: './movie-filter.modal.html'

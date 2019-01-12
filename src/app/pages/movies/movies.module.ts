@@ -10,16 +10,19 @@ import { SharedModule } from '../../shared/shared.module';
 import { MovieSearchListComponent } from './movie-search-list/movie-search-list.component';
 import { MovieWishListPage } from './movie-wish-list/movie-wish-list.page';
 import { MovieWatchedListComponent } from './movie-watched-list/movie-watched-list.component';
+import { MovieFilterModal } from './shared/modals/movie-filter/movie-filter.modal';
 
 @NgModule({
   imports: [CommonModule, FormsModule, IonicModule, MoviesRoutingModule, SharedModule],
+  entryComponents: [MovieFilterModal],
   declarations: [
     MovieListComponent,
     MovieItemComponent,
     MovieDetailPageComponent,
     MovieSearchListComponent,
     MovieWishListPage,
-    MovieWatchedListComponent
+    MovieWatchedListComponent,
+    MovieFilterModal
   ]
 })
 export class MoviesModule {}

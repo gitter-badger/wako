@@ -11,7 +11,6 @@ import { KodiRemoteModal } from './modals/kodi-remote/kodi-remote.modal';
 import { FormsModule } from '@angular/forms';
 import { TorrentListComponent } from './components/torrent-list/torrent-list.component';
 import { KodiRemoteToolbarComponent } from './components/kodi-remote-toolbar/kodi-remote-toolbar.component';
-import { MovieFilterModal } from './modals/movie-filter/movie-filter.modal';
 import { HasTorrentsComponent } from './components/has-torrents/has-torrents.component';
 import { DebugModalComponent } from './modals/debug-modal/debug-modal.component';
 
@@ -22,12 +21,11 @@ const components = [
   TorrentItemComponent,
   KodiRemoteModal,
   KodiRemoteToolbarComponent,
-  MovieFilterModal,
   HasTorrentsComponent,
   DebugModalComponent
 ];
 
-const entryComponents = [KodiRemoteModal, MovieFilterModal, DebugModalComponent];
+const entryComponents = [KodiRemoteModal, DebugModalComponent];
 
 const directives = [ScrollWatcherDirective];
 

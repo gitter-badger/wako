@@ -12,7 +12,7 @@ import { Movie } from '../../../shared/entities/movie';
 import { Subscription } from 'rxjs';
 import { TraktMoviesFilterStructure } from '../../../shared/services/trakt/sturctures/movies/trakt-movies-filter.structure';
 import { SearchMoviesQuery } from '../../../shared/queries/movie/search-movies.query';
-import { MovieFilterModal } from '../../../shared/modals/movie-filter/movie-filter.modal';
+import { MovieFilterModal } from '../shared/modals/movie-filter/movie-filter.modal';
 import { ErrorToastService } from '../../../shared/services/app/error-toast.service';
 
 @Component({
