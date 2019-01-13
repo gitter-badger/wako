@@ -10,7 +10,9 @@ export class ImdbItemQuery {
         method: 'GET',
         responseType: 'text'
       },
-      '7d'
+      '7d',
+      10000,
+      true
     ).pipe(
       map(html => {
         const parser = new DOMParser();

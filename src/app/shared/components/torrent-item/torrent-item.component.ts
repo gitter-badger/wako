@@ -38,7 +38,9 @@ export class TorrentItemComponent {
           url: this.torrent.url,
           responseType: 'text'
         },
-        '1d'
+        '1d',
+        10000,
+        true
       ).pipe(
         map(_html => {
           if (_html.match(/(magnet[^"]+)/)) {
