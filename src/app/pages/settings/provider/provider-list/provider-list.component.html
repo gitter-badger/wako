@@ -11,7 +11,7 @@
     <ion-card-content>
       <ion-list lines="none">
         <ion-item-sliding *ngFor="let provider of (providersMap | keyvalue)">
-          <ion-item color="darkLight">
+          <ion-item>
             <ion-label>{{ provider.value.name }} </ion-label>
             <ion-toggle
               [(ngModel)]="provider.value.enabled"

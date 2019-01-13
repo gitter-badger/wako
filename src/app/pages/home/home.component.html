@@ -31,9 +31,9 @@
     </ion-card-content>
 
     <ion-card-content no-padding *ngIf="!upNextToWatchLoading && upNextToWatch.length > 0">
-      <ion-list>
-        <ion-item color="darkLight" *ngFor="let episode of upNextToWatch" [routerLink]="episode.url">
-          <ion-avatar slot="start"><img [src]="episode.showPoster"/></ion-avatar>
+      <ion-list no-padding>
+        <ion-item *ngFor="let episode of upNextToWatch" [routerLink]="episode.url">
+          <ion-thumbnail slot="start"><img [src]="episode.showPoster"/></ion-thumbnail>
           <ion-label>
             {{ episode.showTitle }} {{ episode.code }} <br />
             <ion-note>{{ episode.title }}</ion-note>

@@ -128,3 +128,9 @@ ion-spinner {
 ion-card-title {
   color: var(--ion-color-light);
 }
+
+ion-card ion-list,
+ion-card ion-item {
+  background-color: var(--ion-color-dark-tint) !important;
+  --background: var(--ion-color-dark-tint) !important;
+}

@@ -10,11 +10,11 @@
     <ion-card-header> <ion-card-title>Notifications</ion-card-title> </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
-        <ion-item color="darkLight">
+        <ion-item>
           <ion-label text-wrap>Enable TV Shows notifications</ion-label>
           <ion-toggle [(ngModel)]="settings.showNotifications.enabled" (ngModelChange)="setSettings()"></ion-toggle>
         </ion-item>
-        <ion-item color="darkLight" *ngIf="settings.showNotifications.enabled">
+        <ion-item *ngIf="settings.showNotifications.enabled">
           <ion-label text-wrap>Get only notified if I've watched all aired episodes</ion-label>
           <ion-toggle
             [(ngModel)]="settings.showNotifications.enableOnlyIfUptToDate"
@@ -28,18 +28,18 @@
   <ion-card>
     <ion-card-content>
       <ion-list lines="none">
-        <ion-item color="darkLight">
+        <ion-item>
           <ion-label text-wrap>Debug mode</ion-label>
           <ion-toggle [(ngModel)]="settings.debug.enabled" (ngModelChange)="setSettings()"></ion-toggle>
         </ion-item>
-        <ion-item color="darkLight" *ngIf="settings.debug.enabled">
+        <ion-item *ngIf="settings.debug.enabled">
           <ion-button (click)="simulateError()">Simulate error</ion-button>
         </ion-item>
-        <ion-item color="darkLight" *ngIf="settings.debug.enabled">
+        <ion-item *ngIf="settings.debug.enabled">
           <ion-button (click)="simulateLog()">Simulate log</ion-button>
         </ion-item>
-        <ion-item color="darkLight"> <ion-button (click)="clearCache()">Clear APP Cache</ion-button> </ion-item>
-        <ion-item color="darkLight"> <ion-button color="secondary" (click)="logout()">Logout</ion-button> </ion-item>
+        <ion-item> <ion-button (click)="clearCache()">Clear APP Cache</ion-button> </ion-item>
+        <ion-item> <ion-button color="secondary" (click)="logout()">Logout</ion-button> </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>

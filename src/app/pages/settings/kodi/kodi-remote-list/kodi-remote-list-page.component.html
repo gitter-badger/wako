@@ -11,9 +11,7 @@
     <ion-card-content>
       <ion-list lines="none">
         <ion-item-sliding *ngFor="let host of hosts">
-          <ion-item color="darkLight" [button]="true" (click)="setHost(host)">
-            {{ host.host }}:{{ host.port }}
-          </ion-item>
+          <ion-item [button]="true" (click)="setHost(host)"> {{ host.host }}:{{ host.port }} </ion-item>
           <ion-item-options side="end">
             <ion-item-option color="danger" (click)="delete(host)"><ion-icon name="trash"></ion-icon></ion-item-option>
           </ion-item-options>
@@ -25,7 +23,7 @@
   <ion-card *ngIf="hosts.length">
     <ion-card-content>
       <ion-list>
-        <ion-item color="darkLight">
+        <ion-item>
           <ion-label>Default host</ion-label>
           <ion-select [(ngModel)]="currentHostId" (ngModelChange)="setDefaultHost($event)">
             <ion-select-option *ngFor="let host of hosts" [value]="host.host + ':' + host.port">{{
