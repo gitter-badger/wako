@@ -123,6 +123,16 @@ export class TorrentListComponent implements OnChanges, OnDestroy {
     this.torrents720p = [];
     this.torrentsOther = [];
 
+    const torrentUris = [];
+    torrents = torrents.filter(torrent => {
+      if (!torrentUris.includes(torrent.url)) {
+        torrentUris.push(torrent.url);
+        return true;
+      }
+
+      return false;
+    });
+
     torrents.forEach(torrent => {
       if (torrent.quality === '1080p') {
         this.torrents1080p.push(torrent);
