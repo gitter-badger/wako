@@ -10,8 +10,7 @@ export class HttpService {
   static request(httpRequest: HttpRequest, needToByPassCorsOnMobile = true): Observable<HttpResponse> {
     let obs: Observable<HttpResponse>;
 
-    if (this.isMobileDevice) {
-      // } && needToByPassCorsOnMobile) {
+    if (this.isMobileDevice && needToByPassCorsOnMobile) {
       obs = this.mobileRequest(httpRequest);
     } else {
       obs = this.browserRequest(httpRequest);
