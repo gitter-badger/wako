@@ -4,13 +4,9 @@ import { map } from 'rxjs/operators';
 
 export class TraktShowsGetSeasonsByIdForm {
   static submit(id: string) {
-    return TraktApiService.get<TraktShowSeasonDto[]>(
-      `/shows/${id}/seasons`,
-      {
-        extended: 'episodes,full'
-      },
-      '1m'
-    ).pipe(
+    return TraktApiService.get<TraktShowSeasonDto[]>(`/shows/${id}/seasons`, {
+      extended: 'episodes,full'
+    }).pipe(
       map((seasons: TraktShowSeasonDto[]) => {
         return seasons.filter(season => season.title !== 'Specials');
       })
