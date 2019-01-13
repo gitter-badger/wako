@@ -4,6 +4,13 @@ wako is a mobile app (for now) build with [ionic](https://github.com/ionic-team/
 It also provides a simple remote control for Kodi and allow you to play any movies or tv shows (using [providers](https://github.com/JumBay/wako/blob/master/README.md#provider))
 via [Elementum](https://github.com/elgatito/plugin.video.elementum) addon
 
+## Features
+
+- Trakt.tv movies and shows sync
+- Notification on new aired episodes
+- Kodi remote control
+- Play any media from provider to kodi thanks to Elementum addons
+
 # Installation
 
 ## Android
