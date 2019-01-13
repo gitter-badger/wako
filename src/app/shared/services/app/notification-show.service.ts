@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { ILocalNotification, LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { TraktShowsGetWatchedForm } from '../trakt/forms/shows/trakt-shows-get-watched.form';
 import { map, switchMap } from 'rxjs/operators';
-import { forkJoin, from, of, timer } from 'rxjs';
+import { forkJoin, from, of, Subscription, timer } from 'rxjs';
 import { Platform } from '@ionic/angular';
 import { TraktShowsGetNextEpisodeForm } from '../trakt/forms/shows/trakt-shows-get-next-episode.form';
 import { TraktEpisodeToEpisodeQuery } from '../../queries/trakt/show/season/episode/trakt-episode-to-episode.query';
 import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
 import { TraktShowWatchedDto } from '../trakt/dtos/shows/trakt-show-watched.dto';
+import { SettingsService } from './settings.service';
+import { Settings } from '../../entities/settings';
 
 @Injectable({
   providedIn: 'root'
@@ -18,14 +19,40 @@ export class NotificationShowService {
     private localNotifications: LocalNotifications,
     private platform: Platform,
     private router: Router,
-    private storage: Storage
-  ) {}
+    private settingsService: SettingsService
+  ) {
+    let previousSettings: Settings = null;
+    let checkAllShowsSubscription: Subscription = null;
+    this.settingsService.settings$.subscribe(settings => {
+      if (previousSettings) {
+        if (settings.showNotifications.enabled === false) {
+          if (checkAllShowsSubscription) {
+            checkAllShowsSubscription.unsubscribe();
+          }
+          this.clearAll();
+        } else {
+          if (
+            previousSettings.showNotifications.enabled !== settings.showNotifications.enabled ||
+            previousSettings.showNotifications.enableOnlyIfUptToDate !==
+              settings.showNotifications.enableOnlyIfUptToDate
+          ) {
+            if (checkAllShowsSubscription) {
+              checkAllShowsSubscription.unsubscribe();
+            }
+            checkAllShowsSubscription = this.checkAllShows().subscribe();
+          }
+        }
+      }
+      previousSettings = JSON.parse(JSON.stringify(settings));
+    });
+  }
 
   private getNotificationIdFromImdbId(showImdbId: string) {
     return +showImdbId.replace('tt', '');
   }
 
   private clearAll() {
+    console.log('Notification disabled, clear them all');
     if (!this.platform.is('cordova')) {
       return Promise.resolve(true);
     }
@@ -52,30 +79,6 @@ export class NotificationShowService {
         return granted;
       } else {
         return this.localNotifications.requestPermission();
-      }
-    });
-  }
-
-  getSettings(): Promise<ShowsNotificationSettings> {
-    return this.storage.get('notificationShowsSettings').then(settings => {
-      if (!settings) {
-        return <ShowsNotificationSettings>{
-          enabled: true,
-          enableOnlyIfUptToDate: true
-        };
-      }
-      return settings;
-    });
-  }
-
-  setSettings(settings: ShowsNotificationSettings) {
-    return this.storage.set('notificationShowsSettings', settings).then(() => {
-      if (settings.enabled === false) {
-        if (this.platform.is('cordova')) {
-          this.clearAll();
-        }
-      } else {
-        this.checkAllShows().subscribe();
       }
     });
   }
@@ -211,7 +214,7 @@ export class NotificationShowService {
       );
     }
 
-    return from(this.getSettings()).pipe(
+    return from(this.settingsService.get()).pipe(
       switchMap(settings => {
         return obs.pipe(
           switchMap(show => {
@@ -224,12 +227,12 @@ export class NotificationShowService {
                 totalWatched += seasons.episodes.length;
               });
 
-              if (!settings.enabled) {
+              if (!settings.showNotifications.enabled) {
                 this.cancel(showImdbId);
                 return of(null);
               }
 
-              if (settings.enableOnlyIfUptToDate && totalWatched < airedEpisodes) {
+              if (settings.showNotifications.enableOnlyIfUptToDate && totalWatched < airedEpisodes) {
                 console.log(
                   `Still have ${airedEpisodes - totalWatched} episode(s) to watched before being notified`,
                   showImdbId,
@@ -247,8 +250,6 @@ export class NotificationShowService {
                   }
 
                   const triggerAt = new Date(data.first_aired);
-                  // const triggerAt = new Date();
-                  // triggerAt.setMinutes(triggerAt.getMinutes() + 1);
 
                   const episodeTitle = data.title;
                   const episodeCode = TraktEpisodeToEpisodeQuery.getEpisodeCode(data.season, data.number);
@@ -280,9 +281,4 @@ export class NotificationShowService {
       }
     });
   }
-}
-
-export interface ShowsNotificationSettings {
-  enabled: boolean;
-  enableOnlyIfUptToDate: boolean; // If user has watched all the aired episode
 }

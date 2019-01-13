@@ -24,22 +24,14 @@
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
-
-        <ion-list lines="none">
-          <ion-item text-center>
-            <ion-label>v{{ appService.appVersion$ | async }}</ion-label>
-          </ion-item>
-        </ion-list>
       </ion-content>
+      <ion-footer>
+        <ion-toolbar text-center>
+          <ion-label>v{{ appService.appVersion$ | async }}</ion-label>
+        </ion-toolbar>
+      </ion-footer>
     </ion-menu>
 
     <ion-router-outlet main></ion-router-outlet>
-
-    <ion-fab class="debug" horizontal="start" vertical="bottom" slot="fixed" *ngIf="(appService.debugMode$ | async)">
-      <ion-fab-button size="small" color="primary" (click)="displayLogs()">
-        <ion-icon name="bug"></ion-icon>
-      </ion-fab-button>
-      <ion-badge color="danger">{{ appService.errorsList.length }}</ion-badge>
-    </ion-fab>
   </ion-split-pane>
 </ion-app>

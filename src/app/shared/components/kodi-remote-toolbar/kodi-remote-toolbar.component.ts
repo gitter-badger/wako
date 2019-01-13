@@ -3,8 +3,11 @@ import { KodiService } from '../../services/app/kodi.service';
 import { KodiPropertiesStructure } from '../../services/kodi/structures/kodi-properties.structure';
 import { Subscription } from 'rxjs';
 import { KodiExcuteActionCommand } from '../../services/kodi/commands/kodi-excute-action.command';
-import { KodiPlayerSetSubtitleForm } from '../../services/kodi/forms/player/kodi-player-set-subtitle.form';
 import { KodiModalService } from '../../services/app/kodi-modal.service';
+import { DebugModalComponent } from '../../modals/debug-modal/debug-modal.component';
+import { ModalController } from '@ionic/angular';
+import { SettingsService } from '../../services/app/settings.service';
+import { AppService } from '../../services/app/app.service';
 
 @Component({
   selector: 'wk-kodi-remote-toolbar',
@@ -16,7 +19,13 @@ export class KodiRemoteToolbarComponent implements OnInit, OnDestroy {
 
   private kodiSubscription: Subscription;
 
-  constructor(public kodiService: KodiService, public kodiModalService: KodiModalService) {}
+  constructor(
+    public kodiService: KodiService,
+    public kodiModalService: KodiModalService,
+    public appService: AppService,
+    public settingsService: SettingsService,
+    private modalCtrl: ModalController
+  ) {}
 
   ngOnInit() {
     this.setKodiProperties();
@@ -42,5 +51,15 @@ export class KodiRemoteToolbarComponent implements OnInit, OnDestroy {
     this.inputExecuteAction('osd');
 
     this.kodiModalService.open();
+  }
+
+  displayLogs() {
+    this.modalCtrl
+      .create({
+        component: DebugModalComponent
+      })
+      .then(modal => {
+        modal.present();
+      });
   }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService, DebugItem } from '../../services/app/app.service';
 import { ModalController } from '@ionic/angular';
+import { SettingsService } from '../../services/app/settings.service';
+import { Settings } from '../../entities/settings';
 
 @Component({
   selector: 'wk-debug-modal',
@@ -10,19 +12,26 @@ import { ModalController } from '@ionic/angular';
 export class DebugModalComponent implements OnInit {
   list: DebugItem[] = [];
 
-  logLevel = 'error';
+  settings: Settings = null;
 
-  constructor(public appService: AppService, private modalCtrl: ModalController) {
-    this.setLogLevel(this.logLevel);
+  constructor(
+    public appService: AppService,
+    public settingsService: SettingsService,
+    private modalCtrl: ModalController
+  ) {}
+
+  ngOnInit() {
+    this.settingsService.get().then(settings => {
+      this.settings = settings;
+      this.handleLogLevel();
+    });
   }
 
-  ngOnInit() {}
-
   emptyList() {
-    if (this.logLevel === 'error') {
+    if (this.settings.debug.logLevel === 'error') {
       this.appService.errorsList = [];
       this.list = this.appService.errorsList;
-    } else if (this.logLevel === 'info') {
+    } else if (this.settings.debug.logLevel === 'info') {
       this.appService.infoList = [];
       this.list = this.appService.errorsList;
     } else {
@@ -32,11 +41,16 @@ export class DebugModalComponent implements OnInit {
     }
   }
 
-  setLogLevel(logLevel: string) {
-    this.logLevel = logLevel;
-    if (this.logLevel === 'error') {
+  setLogLevel() {
+    this.settingsService.set(this.settings);
+
+    this.handleLogLevel();
+  }
+
+  private handleLogLevel() {
+    if (this.settings.debug.logLevel === 'error') {
       this.list = this.appService.errorsList;
-    } else if (this.logLevel === 'info') {
+    } else if (this.settings.debug.logLevel === 'info') {
       this.list = this.appService.infoList;
     } else {
       this.list = [...this.appService.errorsList, ...this.appService.infoList];

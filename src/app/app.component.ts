@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { AppService } from './shared/services/app/app.service';
-import { ModalController } from '@ionic/angular';
-import { DebugModalComponent } from './shared/modals/debug-modal/debug-modal.component';
 
 @Component({
   selector: 'wk-root',
@@ -85,15 +83,5 @@ export class AppComponent {
     }
   ];
 
-  constructor(public appService: AppService, private modalCtrl: ModalController) {}
-
-  displayLogs() {
-    this.modalCtrl
-      .create({
-        component: DebugModalComponent
-      })
-      .then(modal => {
-        modal.present();
-      });
-  }
+  constructor(public appService: AppService) {}
 }

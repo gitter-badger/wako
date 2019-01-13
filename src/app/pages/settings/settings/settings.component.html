@@ -5,23 +5,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-card *ngIf="showsNotificationSettings">
+<ion-content *ngIf="settings !== null">
+  <ion-card *ngIf="settings.showNotifications">
     <ion-card-header> <ion-card-title>Notifications</ion-card-title> </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
         <ion-item color="darkLight">
           <ion-label text-wrap>Enable TV Shows notifications</ion-label>
-          <ion-toggle
-            [(ngModel)]="showsNotificationSettings.enabled"
-            (ngModelChange)="showsNotificationChanged()"
-          ></ion-toggle>
+          <ion-toggle [(ngModel)]="settings.showNotifications.enabled" (ngModelChange)="setSettings()"></ion-toggle>
         </ion-item>
-        <ion-item color="darkLight" *ngIf="showsNotificationSettings.enabled">
+        <ion-item color="darkLight" *ngIf="settings.showNotifications.enabled">
           <ion-label text-wrap>Get only notified if I've watched all aired episodes</ion-label>
           <ion-toggle
-            [(ngModel)]="showsNotificationSettings.enableOnlyIfUptToDate"
-            (ngModelChange)="showsNotificationChanged()"
+            [(ngModel)]="settings.showNotifications.enableOnlyIfUptToDate"
+            (ngModelChange)="setSettings()"
           ></ion-toggle>
         </ion-item>
       </ion-list>
@@ -33,12 +30,12 @@
       <ion-list lines="none">
         <ion-item color="darkLight">
           <ion-label text-wrap>Debug mode</ion-label>
-          <ion-toggle [(ngModel)]="debugMode" (ngModelChange)="setDebugMode()"></ion-toggle>
+          <ion-toggle [(ngModel)]="settings.debug.enabled" (ngModelChange)="setSettings()"></ion-toggle>
         </ion-item>
-        <ion-item color="darkLight" *ngIf="debugMode">
+        <ion-item color="darkLight" *ngIf="settings.debug.enabled">
           <ion-button (click)="simulateError()">Simulate error</ion-button>
         </ion-item>
-        <ion-item color="darkLight" *ngIf="debugMode">
+        <ion-item color="darkLight" *ngIf="settings.debug.enabled">
           <ion-button (click)="simulateLog()">Simulate log</ion-button>
         </ion-item>
         <ion-item color="darkLight"> <ion-button (click)="clearCache()">Clear APP Cache</ion-button> </ion-item>

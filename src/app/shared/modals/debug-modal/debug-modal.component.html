@@ -10,11 +10,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="settings">
   <ion-list>
     <ion-item color="darkLight">
       <ion-label>Log level</ion-label>
-      <ion-select [(ngModel)]="logLevel" (ngModelChange)="setLogLevel($event)">
+      <ion-select [(ngModel)]="settings.debug.logLevel" (ngModelChange)="setLogLevel()">
         <ion-select-option value="all">All</ion-select-option>
         <ion-select-option value="error">Error</ion-select-option>
         <ion-select-option value="info">Info</ion-select-option>

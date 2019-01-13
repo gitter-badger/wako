@@ -19,6 +19,8 @@ import { Firebase } from '@ionic-native/firebase/ngx';
 import { TraktUsersMeForm } from '../trakt/forms/users/trakt-users-me.form';
 import { EventCategory, EventService, EventShowHistoryChangeData } from '../event.service';
 import { NotificationShowService } from './notification-show.service';
+import { SettingsService } from './settings.service';
+import { Settings } from '../../entities/settings';
 
 @Injectable({
   providedIn: 'root'
@@ -30,12 +32,15 @@ export class AppService {
 
   appVersion$ = new BehaviorSubject('');
 
-  debugMode$ = new BehaviorSubject(false);
-
   notificationInitialized = false;
 
   errorsList: DebugItem[] = [];
+
   infoList: DebugItem[] = [];
+
+  private debugModeHasBeenEnabled = false;
+
+  private settings: Settings;
 
   constructor(
     private iab: InAppBrowser,
@@ -48,21 +53,22 @@ export class AppService {
     private appVersion: AppVersion,
     private router: Router,
     private firebase: Firebase,
-    private notificationShowService: NotificationShowService
+    private notificationShowService: NotificationShowService,
+    private settingsService: SettingsService
   ) {
     this.initializeApp();
+
+    this.settingsService.settings$.subscribe(settings => {
+      this.settings = settings;
+      if (settings.debug.enabled && !this.debugModeHasBeenEnabled) {
+        this.debugModeHasBeenEnabled = true;
+        this.rewriteConsole();
+      }
+    });
   }
 
   private initializeApp() {
     this.platform.ready().then(() => {
-      this.rewriteConsole();
-
-      this.debugModeEnabled().then(debugMode => {
-        if (debugMode) {
-          this.debugMode$.next(true);
-        }
-      });
-
       HttpService.isMobileDevice = this.platform.is('cordova');
 
       HttpService.mobileHttpClient = this.mobileHttpClient;
@@ -253,72 +259,71 @@ export class AppService {
     return of(true);
   }
 
-  async debugModeEnabled() {
-    const debugMode = await this.storage.get('debugMode');
-
-    return debugMode !== null;
-  }
-
-  async setDebugMode(debugMode: boolean) {
-    this.debugMode$.next(debugMode);
-
-    if (!debugMode) {
-      return await this.storage.remove('debugMode');
-    }
-    return await this.storage.set('debugMode', true);
-  }
-
-  private async rewriteConsole() {
+  private rewriteConsole() {
     const oldLog = console.log;
     const oldError = console.error;
 
     console.log = (...args) => {
-      this.debugModeEnabled().then(debugMode => {
-        oldLog(...args);
+      oldLog(...args);
 
-        if (!debugMode) {
-          return;
+      if (!this.settings.debug.enabled) {
+        return;
+      }
+
+      const messages = [];
+
+      args.forEach(arg => {
+        let str = '';
+
+        if (arg === undefined) {
+          arg = 'undefined';
         }
-
-        const messages = [];
-
-        args.forEach(arg => {
-          let str = arg.toString();
-          if (typeof arg === 'object') {
-            str = JSON.stringify(arg);
-          }
-          messages.push(str);
-        });
-        this.infoList.push({
-          date: new Date(),
-          type: 'log',
-          message: messages.join(' ')
-        });
+        if (arg === null) {
+          arg = 'null';
+        }
+        if (typeof arg === 'object') {
+          str = JSON.stringify(arg);
+        } else {
+          str = arg.toString();
+        }
+        messages.push(str);
+      });
+      this.infoList.push({
+        date: new Date(),
+        type: 'log',
+        message: messages.join(' ')
       });
     };
 
     console.error = (...args) => {
-      this.debugModeEnabled().then(debugMode => {
-        oldError(...args);
+      oldError(...args);
 
-        if (!debugMode) {
-          return;
+      if (!this.settings.debug.enabled) {
+        return;
+      }
+
+      const messages = [];
+
+      args.forEach(arg => {
+        let str = '';
+
+        if (arg === undefined) {
+          arg = 'undefined';
         }
-
-        const messages = [];
-
-        args.forEach(arg => {
-          let str = arg.toString();
-          if (typeof arg === 'object') {
-            str = JSON.stringify(arg);
-          }
-          messages.push(str);
-        });
-        this.errorsList.push({
-          date: new Date(),
-          type: 'error',
-          message: messages.join(' ')
-        });
+        if (arg === null) {
+          arg = 'null';
+        }
+        if (typeof arg === 'object') {
+          str = JSON.stringify(arg);
+        } else {
+          str = arg.toString();
+        }
+        messages.push(str);
+      });
+      this.errorsList.push({
+        date: new Date(),
+        type: 'error',
+        message: messages.join(' ')
       });
     };
   }

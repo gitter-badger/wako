@@ -1,38 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AppService } from '../../../shared/services/app/app.service';
 import { Router } from '@angular/router';
 import { CacheService } from '../../../shared/services/cache.service';
-import {
-  NotificationShowService,
-  ShowsNotificationSettings
-} from '../../../shared/services/app/notification-show.service';
+import { SettingsService } from '../../../shared/services/app/settings.service';
+import { Settings } from '../../../shared/entities/settings';
 
 @Component({
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent {
-  showsNotificationSettings: ShowsNotificationSettings = null;
-  debugMode = false;
+export class SettingsComponent implements OnInit {
+  settings: Settings = null;
 
-  constructor(
-    public appService: AppService,
-    private router: Router,
-    private notificationShowService: NotificationShowService
-  ) {
-    this.notificationShowService
-      .getSettings()
-      .then(showsNotificationSettings => (this.showsNotificationSettings = showsNotificationSettings));
+  constructor(public appService: AppService, private router: Router, private settingsService: SettingsService) {}
 
-    this.appService.debugModeEnabled().then(debugMode => (this.debugMode = debugMode));
+  ngOnInit(): void {
+    this.settingsService.get().then(settings => (this.settings = settings));
   }
 
-  showsNotificationChanged() {
-    this.notificationShowService.setSettings(this.showsNotificationSettings);
-  }
-
-  setDebugMode() {
-    this.appService.setDebugMode(this.debugMode);
+  setSettings() {
+    this.settingsService.set(this.settings);
   }
 
   logout() {
