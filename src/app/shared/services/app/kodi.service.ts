@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { environment } from '../../../../environments/environment';
 import { KodiHostStructure } from '../kodi/structures/kodi-host.structure';
@@ -27,26 +27,12 @@ export class KodiService {
 
   private prompt;
 
-  constructor(
-    private storage: Storage,
-    private platform: Platform,
-    private ngZone: NgZone,
-    private alertController: AlertController
-  ) {
+  constructor(private storage: Storage, private platform: Platform, private alertController: AlertController) {
     if (this.platform.is('cordova')) {
       this.platform.resume.subscribe(() => {
         console.log('Resume');
         this.connectToDefaultHost();
       });
-      // App.addListener('appStateChange', (state: AppState) => {
-      //   this.ngZone.run(() => {
-      //     if (state.isActive) {
-      //       this.connectToDefaultHost();
-      //     } else {
-      //       this.disconnect();
-      //     }
-      //   });
-      // });
     }
 
     this.connectToDefaultHost();
