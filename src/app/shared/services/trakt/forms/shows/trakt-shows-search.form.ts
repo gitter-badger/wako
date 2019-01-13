@@ -10,7 +10,7 @@ export class TraktShowsSearchForm {
         extended: 'full',
         page: page
       },
-      '1m'
+      '1d'
     );
   }
 }

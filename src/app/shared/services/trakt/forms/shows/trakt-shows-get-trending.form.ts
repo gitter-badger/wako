@@ -10,7 +10,7 @@ export class TraktShowsGetTrendingForm {
         page: page,
         limit: limit
       },
-      '1m'
+      '1d'
     );
   }
 }
